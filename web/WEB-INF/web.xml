@@ -4,9 +4,17 @@
         <servlet-name>ServCategoria</servlet-name>
         <servlet-class>Servlets.ServCategoria</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServPuesto</servlet-name>
+        <servlet-class>Servlets.ServPuesto</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServPuesto</servlet-name>
+        <url-pattern>/ServPuesto</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

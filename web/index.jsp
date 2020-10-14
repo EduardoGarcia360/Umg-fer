@@ -13,5 +13,8 @@
     </head>
     <body>
         <h1>AQUI LOGIN</h1>
+        <a href="ServPuesto?accion=listar">
+            VER PUESTOS
+        </a>
     </body>
 </html>
