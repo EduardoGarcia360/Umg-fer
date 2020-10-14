@@ -16,5 +16,9 @@
         <a href="ServPuesto?accion=listar">
             VER PUESTOS
         </a>
+        <br>
+        <a href="ServFormaPago?accion=listar">
+            VER FORMA DE PAGO
+        </a>
     </body>
 </html>

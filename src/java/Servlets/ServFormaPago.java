@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import Clases.FormaPago;
 import Utils.Conexion;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,14 +17,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import Clases.Puesto;
-import javax.servlet.RequestDispatcher;
 
 /**
  *
  * @author Eduardo
  */
-public class ServPuesto extends HttpServlet {
+public class ServFormaPago extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,56 +39,56 @@ public class ServPuesto extends HttpServlet {
         String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
         if (accion.equals("listar")) {
-            this.listPuesto(cnx, request, response);
+            this.listFormaPago(cnx, request, response);
         }else if (accion.equals("nuevo")) {
-            this.newPuesto(cnx, request, response);
+            this.newFormaPago(cnx, request, response);
         }else if (accion.equals("insertar")) {
-            this.addPuesto(cnx, request, response);
+            this.addFormaPago(cnx, request, response);
         }else if (accion.equals("eliminar")) {
-            this.deletePuesto(cnx, request, response);
+            this.deleteFormaPago(cnx, request, response);
         }else if (accion.equals("consultar")) {
-            this.selectPuesto(cnx, request, response);
+            this.selectFormaPago(cnx, request, response);
         }else if (accion.equals("actualizar")) {
-            this.updatePuesto(cnx, request, response);
+            this.updateFormaPago(cnx, request, response);
         }
     }
     
-    private void listPuesto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void listFormaPago (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_PUESTO}");
+            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_FORMA_PAGO}");
             ResultSet rs = sta.executeQuery();
-            ArrayList<Puesto> lista = new ArrayList<>();
+            ArrayList<FormaPago> lista = new ArrayList<>();
             while (rs.next()) {
-                Puesto p = new Puesto(
+                FormaPago fp = new FormaPago(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3)
                 );
-                lista.add(p);
+                lista.add(fp);
             }
             request.setAttribute("listar", lista);
-            request.getRequestDispatcher("Pages/Puesto/index.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/FormaPago/index.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
     
-    private void newPuesto (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+    private void newFormaPago (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, IOException {
         try {
-            ArrayList<Puesto> lista = new ArrayList<>();
+            ArrayList<FormaPago> lista = new ArrayList<>();
             //al ser nuevo se genera un objeto vacio
-            Puesto p = new Puesto(0, "", "");
-            lista.add(p);
+            FormaPago fp = new FormaPago(0, "", "");
+            lista.add(fp);
             request.setAttribute("gestion", lista);
-            request.getRequestDispatcher("Pages/Puesto/gestion.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/FormaPago/gestion.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
     
-    private void addPuesto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void addFormaPago (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
@@ -98,7 +97,7 @@ public class ServPuesto extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_INS_PUESTO(?, ?)}");
+            sb.append("{call SPR_INS_FORMA_PAGO(?, ?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -111,13 +110,13 @@ public class ServPuesto extends HttpServlet {
             sta.close();
             
             //se redirige a la pagina de index
-            this.listPuesto(cnx, request, response);
+            this.listFormaPago(cnx, request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
     
-    private void deletePuesto (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+    private void deleteFormaPago (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
@@ -125,7 +124,7 @@ public class ServPuesto extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_DEL_PUESTO(?)}");
+            sb.append("{call SPR_DEL_FORMA_PAGO(?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -136,13 +135,13 @@ public class ServPuesto extends HttpServlet {
             sta.close();
             
             //se vuelve a cargar la pagina del index
-            this.listPuesto(cnx, request, response);
+            this.listFormaPago(cnx, request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
     
-    private void selectPuesto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void selectFormaPago (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
@@ -150,7 +149,7 @@ public class ServPuesto extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_SEL_PUESTO_BY_ID(?)}");
+            sb.append("{call SPR_SEL_FORMA_PAGO_BY_ID(?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -158,23 +157,24 @@ public class ServPuesto extends HttpServlet {
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
-            ArrayList<Puesto> lista = new ArrayList<>();
+            ArrayList<FormaPago> lista = new ArrayList<>();
             while (rs.next()) {
-                Puesto p = new Puesto(
+                FormaPago fp = new FormaPago(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3)
                 );
-                lista.add(p);
+                lista.add(fp);
             }
+            sta.close();
             request.setAttribute("gestion", lista);
-            request.getRequestDispatcher("Pages/Puesto/gestion.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/FormaPago/gestion.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
     
-    private void updatePuesto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void updateFormaPago (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
@@ -184,7 +184,7 @@ public class ServPuesto extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_UPD_PUESTO(?, ?, ?)}");
+            sb.append("{call SPR_UPD_FORMA_PAGO(?, ?, ?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -198,7 +198,7 @@ public class ServPuesto extends HttpServlet {
             sta.close();
             
             //se redirige a la pagina de index
-            this.listPuesto(cnx, request, response);
+            this.listFormaPago(cnx, request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
@@ -214,7 +214,7 @@ public class ServPuesto extends HttpServlet {
             out.println("<title>Error</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Error puesto retornado: " + e.getMessage() + "</h1>");
+            out.println("<h1>Error forma de pago retornado: " + e.getMessage() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
