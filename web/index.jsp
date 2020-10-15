@@ -20,5 +20,9 @@
         <a href="ServFormaPago?accion=listar">
             VER FORMA DE PAGO
         </a>
+        <br>
+        <a href="ServEmpleado?accion=listar">
+            VER EMPLEADOS
+        </a>
     </body>
 </html>

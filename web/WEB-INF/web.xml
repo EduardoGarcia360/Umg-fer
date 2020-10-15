@@ -12,6 +12,10 @@
         <servlet-name>ServFormaPago</servlet-name>
         <servlet-class>Servlets.ServFormaPago</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServEmpleado</servlet-name>
+        <servlet-class>Servlets.ServEmpleado</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>ServFormaPago</servlet-name>
         <url-pattern>/ServFormaPago</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServEmpleado</servlet-name>
+        <url-pattern>/ServEmpleado</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
