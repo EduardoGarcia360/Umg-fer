@@ -7,10 +7,17 @@ package Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import Clases.Categoria;
+import Utils.Conexion;
+import java.sql.SQLException;
 
 /**
  *
@@ -30,15 +37,196 @@ public class ServCategoria extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String accion = request.getParameter("accion");
+        Connection cnx = Conexion.getConexion();
+        switch (accion) {
+            case "listar":
+                this.listCategoria(cnx, request, response);
+                break;
+            case "nuevo":
+                this.newCategoria(cnx, request, response);
+                break;
+            case "cancelar":
+                this.listCategoria(cnx, request, response);
+                break;
+            case "insertar":
+                this.addCategoria(cnx, request, response);
+                break;
+            case "eliminar":
+                this.deleteCategoria(cnx, request, response);
+                break;
+            case "consultar":
+                this.selectCategoria(cnx, request, response);
+                break;
+            case "actualizar":
+                this.updateCategoria(cnx, request, response);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private void listCategoria (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_CATEGORIA}");
+            ResultSet rs = sta.executeQuery();
+            ArrayList<Categoria> lista = new ArrayList<>();
+            while (rs.next()) {
+                Categoria c = new Categoria(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3)
+                );
+                lista.add(c);
+            }
+            request.setAttribute("listar", lista);
+            request.getRequestDispatcher("Pages/Categoria/index.jsp").forward(request, response);
+        }catch(IOException | SQLException | ServletException e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void newCategoria (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+        try {
+            ArrayList<Categoria> lista = new ArrayList<>();
+            //al ser nuevo se genera un objeto vacio
+            Categoria c = new Categoria(0, "", "");
+            lista.add(c);
+            request.setAttribute("gestion", lista);
+            request.getRequestDispatcher("Pages/Categoria/gestion.jsp").forward(request, response);
+        }catch(IOException | ServletException e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void addCategoria (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            //se obtienen los parametros
+            String codigo = request.getParameter("txtCodigo");
+            String nombre = request.getParameter("txtNombre");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_INS_CATEGORIA(?, ?)}");
+            //se sustituyen los valores para los parametros
+            //en el mismo orden del stored procedure
+            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
+                //se sustituyen los valores para los parametros
+                //en el mismo orden del stored procedure
+                sta.setString(1, codigo);
+                sta.setString(2, nombre);
+                
+                //se ejecuta el spr con los parametros
+                sta.executeUpdate();
+            }
+            
+            //se redirige a la pagina de index
+            this.listCategoria(cnx, request, response);
+        }catch(IOException | SQLException | ServletException e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void deleteCategoria (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+        try {
+            //se obtienen los parametros
+            int idCategoria = Integer.parseInt(request.getParameter("id"));
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_DEL_CATEGORIA(?)}");
+            //se sustituyen los valores para los parametros
+            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
+                //se sustituyen los valores para los parametros
+                sta.setInt(1, idCategoria);
+                
+                //se ejecuta el spr con los parametros
+                sta.executeUpdate();
+            }
+            
+            //se vuelve a cargar la pagina del index
+            this.listCategoria(cnx, request, response);
+        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void selectCategoria (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            //se obtienen los parametros
+            int idCategoria = Integer.parseInt(request.getParameter("id"));
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
+            //se sustituyen los valores para los parametros
+            sta.setInt(1, idCategoria);
+            
+            //se ejecuta el spr con los parametros
+            ResultSet rs = sta.executeQuery();
+            ArrayList<Categoria> lista = new ArrayList<>();
+            while (rs.next()) {
+                Categoria c = new Categoria(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3)
+                );
+                lista.add(c);
+            }
+            request.setAttribute("gestion", lista);
+            request.getRequestDispatcher("Pages/Categoria/gestion.jsp").forward(request, response);
+        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void updateCategoria (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            //se obtienen los parametros
+            int idCategoria = Integer.parseInt(request.getParameter("id"));
+            String codigo = request.getParameter("txtCodigo");
+            String nombre = request.getParameter("txtNombre");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_UPD_CATEGORIA(?, ?, ?)}");
+            //se sustituyen los valores para los parametros
+            //en el mismo orden del stored procedure
+            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
+                //se sustituyen los valores para los parametros
+                //en el mismo orden del stored procedure
+                sta.setInt(1, idCategoria);
+                sta.setString(2, nombre);
+                sta.setString(3, codigo);
+                
+                //se ejecuta el spr con los parametros
+                sta.executeUpdate();
+            }
+            
+            //se redirige a la pagina de index
+            this.listCategoria(cnx, request, response);
+        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+            this.defaultError(e, response);
+        }
+    }
+        private void defaultError (Exception e, HttpServletResponse response)
+        throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ServCategoria</title>");            
+            out.println("<title>ERROR</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ServCategoria at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Error Categoria retornado: " + e.getMessage() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
