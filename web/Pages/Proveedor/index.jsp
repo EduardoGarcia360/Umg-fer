@@ -1,27 +1,26 @@
 <%-- 
     Document   : index
-    Created on : 11-oct-2020, 17:18:52
-    Author     : Eduardo
+    Created on : 19/10/2020, 08:41:10 PM
+    Author     : juanc
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="Clases.Marca"%>
+<%@page import="Clases.Proveedor"%>
 <%@page import="java.util.ArrayList"%>
 <!DOCTYPE html>
-
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Marca</title>
+        <title>Proveedor</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
-        <h1>Listado de Marca</h1>
+        <h1>Listado de Proveedor</h1>
         <table>
             <tbody>
                 <tr>
                     <td>
-                        <a href="ServMarca?accion=nuevo">
+                        <a href="ServProveedor?accion=nuevo">
                             <img src="imagenes/add_icon.png" width="30" title="Nuevo">
                         </a>
                     </td>
@@ -43,18 +42,18 @@
             </thead>
             <tbody>
                 <%
-                    ArrayList<Marca> lista = (ArrayList<Marca>)request.getAttribute("listar");
+                    ArrayList<Proveedor> lista = (ArrayList<Proveedor>)request.getAttribute("listar");
                     for (int i = 0; i<lista.size(); i++){
-                        Marca m = lista.get(i);
+                        Proveedor p = lista.get(i);
                         %>
                         <tr>
-                            <td><%= m.getCodMarca()%></td>
-                            <td><%= m.getNombre()%></td>
+                            <td><%= p.getCodProveedor()%></td>
+                            <td><%= p.getNombre()%></td>
                             <td>
-                                <a href="ServMarca?accion=consultar&id=<%= m.getIdMarca()%>">
+                                <a href="ServProveedor?accion=consultar&id=<%= p.getIdProveedor()%>">
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
-                                <a href="ServMarca?accion=eliminar&id=<%= m.getIdMarca()%>" onclick="return confirm('¿Desea eliminar la Marca con codigo: <%= m.getCodMarca()%>?')">
+                                <a href="ServProveedor?accion=eliminar&id=<%= p.getIdProveedor()%>" onclick="return confirm('¿Desea eliminar el Proveedor con codigo: <%= p.getCodProveedor()%>?')">
                                     <img src="imagenes/delete_icon.png" width="30" title="Editar">
                                 </a>
                             </td>

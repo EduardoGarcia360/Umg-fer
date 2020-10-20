@@ -15,14 +15,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import Clases.Marca;
 import Utils.Conexion;
+import Clases.Proveedor;
 import java.sql.SQLException;
+
+
 /**
  *
  * @author juanc
  */
-public class ServMarca extends HttpServlet {
+public class ServProveedor extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,67 +42,67 @@ public class ServMarca extends HttpServlet {
         Connection cnx = Conexion.getConexion();
         switch (accion) {
             case "listar":
-                this.listMarca(cnx, request, response);
+                this.listProveedor(cnx, request, response);
                 break;
             case "nuevo":
-                this.newMarca(cnx, request, response);
+                this.newProveedor(cnx, request, response);
                 break;
             case "cancelar":
-                this.listMarca(cnx, request, response);
+                this.listProveedor(cnx, request, response);
                 break;
             case "insertar":
-                this.addMarca(cnx, request, response);
+                this.addProveedor(cnx, request, response);
                 break;
             case "eliminar":
-                this.deleteMarca(cnx, request, response);
+                this.deleteProveedor(cnx, request, response);
                 break;
             case "consultar":
-                this.selectMarca(cnx, request, response);
+                this.selectProveedor(cnx, request, response);
                 break;
             case "actualizar":
-                this.updateMarca(cnx, request, response);
+                this.updateProveedor(cnx, request, response);
                 break;
             default:
                 break;
         }
     }
     
-    private void listMarca (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void listProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_MARCA}");
+            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_CATEGORIA}");
             ResultSet rs = sta.executeQuery();
-            ArrayList<Marca> lista = new ArrayList<>();
+            ArrayList<Proveedor> lista = new ArrayList<>();
             while (rs.next()) {
-                Marca m = new Marca(
+                Proveedor p = new Proveedor(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3)
                 );
-                lista.add(m);
+                lista.add(p);
             }
             request.setAttribute("listar", lista);
-            request.getRequestDispatcher("Pages/Marca/index.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/Proveedor/index.jsp").forward(request, response);
         }catch(IOException | SQLException | ServletException e) {
             this.defaultError(e, response);
         }
     }
     
-    private void newMarca (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+    private void newProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, IOException {
         try {
-            ArrayList<Marca> lista = new ArrayList<>();
+            ArrayList<Proveedor> lista = new ArrayList<>();
             //al ser nuevo se genera un objeto vacio
-            Marca m = new Marca(0, "", "");
-            lista.add(m);
+            Proveedor p = new Proveedor(0, "", "");
+            lista.add(p);
             request.setAttribute("gestion", lista);
-            request.getRequestDispatcher("Pages/Marca/gestion.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/Proveedor/gestion.jsp").forward(request, response);
         }catch(IOException | ServletException e) {
             this.defaultError(e, response);
         }
     }
     
-    private void addMarca (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void addProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
@@ -109,7 +111,7 @@ public class ServMarca extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_INS_MARCA(?, ?)}");
+            sb.append("{call SPR_INS_PROVEEDOR(?, ?)}");
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
             try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
@@ -123,85 +125,85 @@ public class ServMarca extends HttpServlet {
             }
             
             //se redirige a la pagina de index
-            this.listMarca(cnx, request, response);
+            this.listProveedor(cnx, request, response);
         }catch(IOException | SQLException | ServletException e) {
             this.defaultError(e, response);
         }
     }
     
-    private void deleteMarca (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+    private void deleteProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idMarca = Integer.parseInt(request.getParameter("id"));
+            int idProveedor = Integer.parseInt(request.getParameter("id"));
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_DEL_MARCA(?)}");
+            sb.append("{call SPR_DEL_PROVEEDOR(?)}");
             //se sustituyen los valores para los parametros
             try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
                 //se sustituyen los valores para los parametros
-                sta.setInt(1, idMarca);
+                sta.setInt(1, idProveedor);
                 
                 //se ejecuta el spr con los parametros
                 sta.executeUpdate();
             }
             
             //se vuelve a cargar la pagina del index
-            this.listMarca(cnx, request, response);
+            this.listProveedor(cnx, request, response);
         }catch(IOException | NumberFormatException | SQLException | ServletException e) {
             this.defaultError(e, response);
         }
     }
     
-    private void selectMarca (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void selectProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idMarca = Integer.parseInt(request.getParameter("id"));
+            int idProveedor = Integer.parseInt(request.getParameter("id"));
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
-            sta.setInt(1, idMarca);
+            sta.setInt(1, idProveedor);
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
-            ArrayList<Marca> lista = new ArrayList<>();
+            ArrayList<Proveedor> lista = new ArrayList<>();
             while (rs.next()) {
-                Marca m = new Marca(
+                Proveedor p = new Proveedor(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3)
                 );
-                lista.add(m);
+                lista.add(p);
             }
             request.setAttribute("gestion", lista);
-            request.getRequestDispatcher("Pages/Marca/gestion.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/PROVEEDOR/gestion.jsp").forward(request, response);
         }catch(IOException | NumberFormatException | SQLException | ServletException e) {
             this.defaultError(e, response);
         }
     }
     
-    private void updateMarca (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void updateProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idMarca = Integer.parseInt(request.getParameter("id"));
+            int idProveedor = Integer.parseInt(request.getParameter("id"));
             String codigo = request.getParameter("txtCodigo");
             String nombre = request.getParameter("txtNombre");
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_UPD_MARCA(?, ?, ?)}");
+            sb.append("{call SPR_UPD_PROVEEDOR(?, ?, ?)}");
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
             try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
                 //se sustituyen los valores para los parametros
                 //en el mismo orden del stored procedure
-                sta.setInt(1, idMarca);
+                sta.setInt(1, idProveedor);
                 sta.setString(2, nombre);
                 sta.setString(3, codigo);
                 
@@ -210,7 +212,7 @@ public class ServMarca extends HttpServlet {
             }
             
             //se redirige a la pagina de index
-            this.listMarca(cnx, request, response);
+            this.listProveedor(cnx, request, response);
         }catch(IOException | NumberFormatException | SQLException | ServletException e) {
             this.defaultError(e, response);
         }
@@ -225,7 +227,7 @@ public class ServMarca extends HttpServlet {
             out.println("<title>ERROR</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Error Marca retornado: " + e.getMessage() + "</h1>");
+            out.println("<h1>Error Proveedor retornado: " + e.getMessage() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

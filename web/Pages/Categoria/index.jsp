@@ -53,7 +53,7 @@
                                 <a href="ServCategoria?accion=consultar&id=<%= c.getIdCategoria()%>">
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
-                                <a href="ServCategoria?accion=eliminar&id=<%= c.getIdCategoria()%>" onclick="return confirm('¿Desea eliminar el puesto con codigo: <%= c.getCodCategoria()%>?')">
+                                <a href="ServCategoria?accion=eliminar&id=<%= c.getIdCategoria()%>" onclick="return confirm('¿Desea eliminar la Marca con codigo: <%= c.getCodCategoria()%>?')">
                                     <img src="imagenes/delete_icon.png" width="30" title="Editar">
                                 </a>
                             </td>

@@ -20,6 +20,10 @@
         <servlet-name>Marca</servlet-name>
         <servlet-class>Servlets.ServMarca</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServProveedor</servlet-name>
+        <servlet-class>Servlets.ServProveedor</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>Marca</servlet-name>
         <url-pattern>/Marca</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServProveedor</servlet-name>
+        <url-pattern>/ServProveedor</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
