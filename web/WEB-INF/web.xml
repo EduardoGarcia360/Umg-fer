@@ -16,6 +16,10 @@
         <servlet-name>ServEmpleado</servlet-name>
         <servlet-class>Servlets.ServEmpleado</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Marca</servlet-name>
+        <servlet-class>Servlets.ServMarca</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>ServEmpleado</servlet-name>
         <url-pattern>/ServEmpleado</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Marca</servlet-name>
+        <url-pattern>/Marca</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
