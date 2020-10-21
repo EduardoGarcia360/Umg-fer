@@ -24,6 +24,10 @@
         <servlet-name>ServProveedor</servlet-name>
         <servlet-class>Servlets.ServProveedor</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServProducto</servlet-name>
+        <servlet-class>Servlets.ServProducto</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>ServProveedor</servlet-name>
         <url-pattern>/ServProveedor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServProducto</servlet-name>
+        <url-pattern>/ServProducto</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
