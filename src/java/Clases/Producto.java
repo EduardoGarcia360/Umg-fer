@@ -63,7 +63,7 @@ public class Producto {
         return codProducto;
     }
 
-    public void setCodProducto(String pass) {
+    public void setCodProducto(String codProducto) {
         this.codProducto = codProducto;
     }
 
