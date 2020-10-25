@@ -25,19 +25,19 @@
             VER EMPLEADOS
         </a>
         <br>
-        <a href="ServEmpleado?accion=listar">
+        <a href="ServProducto?accion=listar">
             VER PRODUCTOS
         </a>
         <br>
-        <a href="ServEmpleado?accion=listar">
+        <a href="ServCategoria?accion=listar">
             VER CATEGORIAS
         </a>
         <br>
-        <a href="ServEmpleado?accion=listar">
+        <a href="ServMarca?accion=listar">
             VER MARCAS
         </a>
         <br>
-        <a href="ServEmpleado?accion=listar">
+        <a href="ServProveedor?accion=listar">
             VER PROVEEDORES
         </a>
     </body>
