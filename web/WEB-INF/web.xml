@@ -17,7 +17,7 @@
         <servlet-class>Servlets.ServEmpleado</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Marca</servlet-name>
+        <servlet-name>ServMarca</servlet-name>
         <servlet-class>Servlets.ServMarca</servlet-class>
     </servlet>
     <servlet>
@@ -45,8 +45,8 @@
         <url-pattern>/ServEmpleado</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Marca</servlet-name>
-        <url-pattern>/Marca</url-pattern>
+        <servlet-name>ServMarca</servlet-name>
+        <url-pattern>/ServMarca</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ServProveedor</servlet-name>

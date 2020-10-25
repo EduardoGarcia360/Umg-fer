@@ -40,5 +40,9 @@
         <a href="ServProveedor?accion=listar">
             VER PROVEEDORES
         </a>
+        <br>
+        <a href="ServMarca?accion=listar">
+            VER MARCAS
+        </a>
     </body>
 </html>
