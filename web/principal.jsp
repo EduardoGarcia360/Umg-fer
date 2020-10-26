@@ -20,8 +20,7 @@
     </head>
     <body>
         <% 
-            Empleado emp = (Empleado)request.getAttribute("usuario");
-            String nombre = emp.getNombre() + " " + emp.getApellido();
+            String nombre = (String)session.getAttribute("nombre");
         %>
         <nav class="navbar navbar-expand-lg navbar-light bg-info">
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -46,7 +45,7 @@
                 </li>
               </ul>
             </div>
-            <div class="dropdown">
+            <div class="btn-group dropleft">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <%= nombre%>
                 </button>
@@ -54,6 +53,10 @@
                   <a class="dropdown-item" href="#">Action</a>
                   <a class="dropdown-item" href="#">Another action</a>
                   <a class="dropdown-item" href="#">Something else here</a>
+                  <div class="dropdown-divider"></div>
+                  <form action="Validar" method="POST" style="display:block; text-align: center;">
+                      <input type="submit" name="accion" value="Salir" class="btn btn-primary">
+                  </form>
                 </div>
             </div>
         </nav>

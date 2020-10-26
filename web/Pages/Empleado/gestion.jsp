@@ -19,6 +19,14 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String nombre = (String)session.getAttribute("nombre");
+            if(nombre == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+        %>
         <h1>Gestion de Empleado</h1>
         <form method="POST">
             <table border="1" class="table table-striped table-bordered">

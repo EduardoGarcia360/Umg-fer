@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -41,8 +42,21 @@ public class Validar extends HttpServlet {
         Connection cnx = Conexion.getConexion();
         if (accion.equals("Ingresar")) {
             this.validarLogin(cnx, request, response);
-        } else {
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+        } else if (accion.equals("Salir")){
+            this.cerrarSesion(cnx, request, response);
+        }else {
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Error</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Comando invalido</h1>");
+                out.println("<a href=\"index.jsp\">Inicio</a>");
+                out.println("</body>");
+                out.println("</html>");
+            }
         }
     }
     
@@ -79,21 +93,11 @@ public class Validar extends HttpServlet {
                 out.println("</html>");
             }*/
             if (rs.next()) {
-                Empleado emp = new Empleado(
-                        rs.getInt(1),
-                        0,
-                        rs.getString(2),
-                        "",
-                        "",
-                        rs.getString(3),
-                        rs.getString(4),
-                        "",
-                        "",
-                        "","",
-                        "",
-                        rs.getString(5)
-                );
-                request.setAttribute("usuario", emp);
+                HttpSession sesion = request.getSession();
+                String nombre_completo = rs.getString(3) + " " + rs.getString(4);
+                sesion.setAttribute("nombre", nombre_completo);
+                sesion.setAttribute("codEmp", rs.getString(2));
+                sesion.setAttribute("puesto", rs.getString(5));
                 request.getRequestDispatcher("principal.jsp").forward(request, response);
             } else {
                 try (PrintWriter out = response.getWriter()) {
@@ -104,11 +108,22 @@ public class Validar extends HttpServlet {
                     out.println("</head>");
                     out.println("<body>");
                     out.println("<h1>Usuario o contraseña incorrecto</h1>");
-                    out.println("<a href=\"index.jsp\">Regresar</a>");
+                    out.println("<a href=\"index.jsp\">Inicio</a>");
                     out.println("</body>");
                     out.println("</html>");
                 }
             }
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void cerrarSesion (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();  
+            session.invalidate();
+            response.sendRedirect("index.jsp");
         }catch(Exception e) {
             this.defaultError(e, response);
         }
