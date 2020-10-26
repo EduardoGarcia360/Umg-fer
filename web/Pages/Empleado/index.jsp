@@ -17,13 +17,13 @@
     <body>
         <% 
             //cuando no hay sesion iniciada retorna al login
-            String nombre = (String)session.getAttribute("nombre");
-            if(nombre == null){
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
                 response.sendRedirect("index.jsp");
                 return;
             }
         %>
-        <h1>Listado de Empleados: <%= nombre%></h1>
+        <h1>Listado de Empleados</h1>
         <table>
             <tbody>
                 <tr>

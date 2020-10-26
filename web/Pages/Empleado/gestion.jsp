@@ -21,8 +21,8 @@
     <body>
         <% 
             //cuando no hay sesion iniciada retorna al login
-            String nombre = (String)session.getAttribute("nombre");
-            if(nombre == null){
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
                 response.sendRedirect("index.jsp");
                 return;
             }
