@@ -54,7 +54,7 @@
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
                                 <a href="ServCategoria?accion=eliminar&id=<%= c.getIdCategoria()%>" onclick="return confirm('¿Desea eliminar la Categoria con codigo: <%= c.getCodCategoria()%>?')">
-                                    <img src="imagenes/delete_icon.png" width="30" title="Editar">
+                                    <img src="imagenes/delete_icon.png" width="30" title="Borrar">
                                 </a>
                             </td>
                         </tr>

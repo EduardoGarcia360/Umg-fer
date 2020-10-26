@@ -36,29 +36,20 @@ public class ServProducto extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String accion = request.getParameter("accion");
+String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
-        switch (accion) {
-            case "listar":
-                this.listProducto(cnx, request, response);
-                break;
-            case "nuevo":
-                this.newProducto(cnx, request, response);
-                break;
-            case "insertar":
-                this.addProducto(cnx, request, response);
-                break;
-            case "eliminar":
-                this.deleteProducto(cnx, request, response);
-                break;
-            case "consultar":
-                this.selectProducto(cnx, request, response);
-                break;
-            case "actualizar":
-                this.updateProducto(cnx, request, response);
-                break;
-            default:
-                break;
+        if (accion.equals("listar")) {
+            this.listProducto(cnx, request, response);
+        }else if (accion.equals("nuevo")) {
+            this.newProducto(cnx, request, response);
+        }else if (accion.equals("insertar")) {
+            this.addProducto(cnx, request, response);
+        }else if (accion.equals("eliminar")) {
+            this.deleteProducto(cnx, request, response);
+        }else if (accion.equals("consultar")) {
+            this.selectProducto(cnx, request, response);
+        }else if (accion.equals("actualizar")) {
+            this.updateProducto(cnx, request, response);
         }
     }
     
@@ -73,7 +64,7 @@ public class ServProducto extends HttpServlet {
                     rs.getInt(1),
                     rs.getInt(2),
                     rs.getInt(3),
-                    rs.getInt(4),
+                    rs.getInt(4),   
                     rs.getString(5),
                     rs.getString(6),
                     rs.getString(7),
@@ -90,7 +81,8 @@ public class ServProducto extends HttpServlet {
             this.defaultError(e, response);
         }
     }
-     private void newProducto (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
+    
+    private void newProducto (Connection cnx, HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, IOException {
         try {
             ArrayList<Producto> lista = new ArrayList<>();
@@ -103,6 +95,7 @@ public class ServProducto extends HttpServlet {
             this.defaultError(e, response);
         }
     }
+    
     private void addProducto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
@@ -120,7 +113,7 @@ public class ServProducto extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_INS_PRODUCTO(?, ?, ?, ?, ?, ?, ?)}");
+            sb.append("{call SPR_INS_PRODUCTO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -135,7 +128,7 @@ public class ServProducto extends HttpServlet {
             sta.setString(8, orden_compra);
             sta.setString(9, serie_factura);
             sta.setString(10, numero_factura);
-          
+            
             //se ejecuta el spr con los parametros
             sta.executeUpdate();
             sta.close();
@@ -152,6 +145,8 @@ public class ServProducto extends HttpServlet {
         try {
             //se obtienen los parametros
             int idMarca = Integer.parseInt(request.getParameter("id"));
+            int idCategoria = Integer.parseInt(request.getParameter("id"));
+            int idProveedor = Integer.parseInt(request.getParameter("id"));
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -160,6 +155,8 @@ public class ServProducto extends HttpServlet {
             
             //se sustituyen los valores para los parametros
             sta.setInt(1, idMarca);
+            sta.setInt(1, idCategoria);
+            sta.setInt(1, idProveedor);
             
             //se ejecuta el spr con los parametros
             sta.executeUpdate();
@@ -177,6 +174,8 @@ public class ServProducto extends HttpServlet {
         try {
             //se obtienen los parametros
             int idMarca = Integer.parseInt(request.getParameter("id"));
+            int idCategoria = Integer.parseInt(request.getParameter("id"));
+            int idProveedor = Integer.parseInt(request.getParameter("id"));
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -185,6 +184,9 @@ public class ServProducto extends HttpServlet {
             
             //se sustituyen los valores para los parametros
             sta.setInt(1, idMarca);
+            sta.setInt(1, idCategoria);
+            sta.setInt(1, idProveedor);
+            
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
@@ -258,6 +260,7 @@ public class ServProducto extends HttpServlet {
             this.defaultError(e, response);
         }
     }
+    
     private void defaultError (Exception e, HttpServletResponse response)
         throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {

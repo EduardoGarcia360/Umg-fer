@@ -34,34 +34,22 @@ public class ServMarca extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
-        switch (accion) {
-            case "listar":
-                this.listMarca(cnx, request, response);
-                break;
-            case "nuevo":
-                this.newMarca(cnx, request, response);
-                break;
-            case "cancelar":
-                this.listMarca(cnx, request, response);
-                break;
-            case "insertar":
-                this.addMarca(cnx, request, response);
-                break;
-            case "eliminar":
-                this.deleteMarca(cnx, request, response);
-                break;
-            case "consultar":
-                this.selectMarca(cnx, request, response);
-                break;
-            case "actualizar":
-                this.updateMarca(cnx, request, response);
-                break;
-            default:
-                break;
+        if (accion.equals("listar")) {
+            this.listMarca(cnx, request, response);
+        }else if (accion.equals("nuevo")) {
+            this.newMarca(cnx, request, response);
+        }else if (accion.equals("insertar")) {
+            this.addMarca(cnx, request, response);
+        }else if (accion.equals("eliminar")) {
+            this.deleteMarca(cnx, request, response);
+        }else if (accion.equals("consultar")) {
+            this.selectMarca(cnx, request, response);
+        }else if (accion.equals("actualizar")) {
+            this.updateMarca(cnx, request, response);
         }
     }
     
@@ -81,7 +69,7 @@ public class ServMarca extends HttpServlet {
             }
             request.setAttribute("listar", lista);
             request.getRequestDispatcher("Pages/Marca/index.jsp").forward(request, response);
-        }catch(IOException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -95,7 +83,7 @@ public class ServMarca extends HttpServlet {
             lista.add(m);
             request.setAttribute("gestion", lista);
             request.getRequestDispatcher("Pages/Marca/gestion.jsp").forward(request, response);
-        }catch(IOException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -110,21 +98,20 @@ public class ServMarca extends HttpServlet {
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_INS_MARCA(?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
-            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
-                //se sustituyen los valores para los parametros
-                //en el mismo orden del stored procedure
-                sta.setString(1, codigo);
-                sta.setString(2, nombre);
-                
-                //se ejecuta el spr con los parametros
-                sta.executeUpdate();
-            }
+            sta.setString(1, codigo);
+            sta.setString(2, nombre);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
             
             //se redirige a la pagina de index
             this.listMarca(cnx, request, response);
-        }catch(IOException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -138,18 +125,18 @@ public class ServMarca extends HttpServlet {
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_DEL_MARCA(?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
             //se sustituyen los valores para los parametros
-            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
-                //se sustituyen los valores para los parametros
-                sta.setInt(1, idMarca);
-                
-                //se ejecuta el spr con los parametros
-                sta.executeUpdate();
-            }
+            sta.setInt(1, idMarca);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
             
             //se vuelve a cargar la pagina del index
             this.listMarca(cnx, request, response);
-        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -162,6 +149,7 @@ public class ServMarca extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_SEL_MARCA_BY_ID(?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -178,9 +166,10 @@ public class ServMarca extends HttpServlet {
                 );
                 lista.add(m);
             }
+            sta.close();
             request.setAttribute("gestion", lista);
             request.getRequestDispatcher("Pages/Marca/gestion.jsp").forward(request, response);
-        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -196,26 +185,26 @@ public class ServMarca extends HttpServlet {
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_UPD_MARCA(?, ?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
-            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
-                //se sustituyen los valores para los parametros
-                //en el mismo orden del stored procedure
-                sta.setInt(1, idMarca);
-                sta.setString(2, nombre);
-                sta.setString(3, codigo);
-                
-                //se ejecuta el spr con los parametros
-                sta.executeUpdate();
-            }
+            sta.setInt(1, idMarca);
+            sta.setString(2, nombre);
+            sta.setString(3, codigo);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
             
             //se redirige a la pagina de index
             this.listMarca(cnx, request, response);
-        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
-        private void defaultError (Exception e, HttpServletResponse response)
+    
+    private void defaultError (Exception e, HttpServletResponse response)
         throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */

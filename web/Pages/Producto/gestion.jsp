@@ -28,55 +28,7 @@
                     for (int i = 0; i<lista.size(); i++){
                         Producto pro = lista.get(i);
                         %>
-                        <tr>
-                            <td>CODIGO DE PRODUCTO</td>
-                            <td>
-                                <input type="text" name="txtCodigo" value="<%= pro.getCodProducto()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>MARCA</td>
-                            <td>
-                                <input type="text" name="txtMarca" value="<%= pro.getIdMarca()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CATEGORIA</td>
-                            <td>
-                                <input type="text" name="txtCategoria" value="<%= pro.getIdCategoria()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>NOMBRE</td>
-                            <td>
-                                <input type="text" name="txtNombre" value="<%= pro.getNombre()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>PRECIO</td>
-                            <td>
-                                <input type="text" name="txtPrecio" value="<%= pro.getPrecio()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>EXISTENCIA</td>
-                            <td>
-                                <input type="text" name="txtExistencia" value="<%= pro.getExistencia()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>SERIE_FACTURA</td>
-                            <td>
-                                <input type="text" name="txtSerie_fac" value="<%= pro.getSerie_factura()%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>NUMERO_FACTURA</td>
-                            <td>
-                                <input type="text" name="txtNumero_fac" value="<%= pro.getNumero_factura()%>">
-                            </td>
-                        </tr>
-                        <tr>
+                         <tr>
                             <td>MARCA</td>
                             <td>
                                 <select name="selectMarca">
@@ -112,6 +64,54 @@
                         <% 
                             if (pro.getIdProducto() == 0) {
                         %>
+                        <tr>
+                            <td>CATEGORIA</td>
+                             <td>
+                                <input type="text" name="txtCategoria" value="<%= pro.getIdCategoria()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PROVEEDOR</td>
+                            <td>
+                                <input type="text" name="txtProveedor" value="<%= pro.getIdProveedor()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>CODIGO DE PRODUCTO</td>
+                            <td>
+                                <input type="text" name="txtCodigo" value="<%= pro.getCodProducto()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>NOMBRE</td>
+                            <td>
+                                <input type="text" name="txtNombre" value="<%= pro.getNombre()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PRECIO</td>
+                            <td>
+                                <input type="text" name="txtPrecio" value="<%= pro.getPrecio()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>EXISTENCIA</td>
+                            <td>
+                                <input type="text" name="txtExistencia" value="<%= pro.getExistencia()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>SERIE_FACTURA</td>
+                            <td>
+                                <input type="text" name="txtSerie_fac" value="<%= pro.getSerie_factura()%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>NUMERO_FACTURA</td>
+                            <td>
+                                <input type="text" name="txtNumero_fac" value="<%= pro.getNumero_factura()%>">
+                            </td>
+                        </tr>
                         <tr>
                             <td></td>
                             <td>

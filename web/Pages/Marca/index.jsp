@@ -55,7 +55,7 @@
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
                                 <a href="ServMarca?accion=eliminar&id=<%= m.getIdMarca()%>" onclick="return confirm('¿Desea eliminar la Marca con codigo: <%= m.getCodMarca()%>?')">
-                                    <img src="imagenes/delete_icon.png" width="30" title="Editar">
+                                    <img src="imagenes/delete_icon.png" width="30" title="Borrar">
                                 </a>
                             </td>
                         </tr>

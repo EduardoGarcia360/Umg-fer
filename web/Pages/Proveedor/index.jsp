@@ -54,7 +54,7 @@
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
                                 <a href="ServProveedor?accion=eliminar&id=<%= p.getIdProveedor()%>" onclick="return confirm('¿Desea eliminar el Proveedor con codigo: <%= p.getCodProveedor()%>?')">
-                                    <img src="imagenes/delete_icon.png" width="30" title="Editar">
+                                    <img src="imagenes/delete_icon.png" width="30" title="Borrar">
                                 </a>
                             </td>
                         </tr>

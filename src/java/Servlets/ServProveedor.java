@@ -36,41 +36,29 @@ public class ServProveedor extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
-        switch (accion) {
-            case "listar":
-                this.listProveedor(cnx, request, response);
-                break;
-            case "nuevo":
-                this.newProveedor(cnx, request, response);
-                break;
-            case "cancelar":
-                this.listProveedor(cnx, request, response);
-                break;
-            case "insertar":
-                this.addProveedor(cnx, request, response);
-                break;
-            case "eliminar":
-                this.deleteProveedor(cnx, request, response);
-                break;
-            case "consultar":
-                this.selectProveedor(cnx, request, response);
-                break;
-            case "actualizar":
-                this.updateProveedor(cnx, request, response);
-                break;
-            default:
-                break;
+        if (accion.equals("listar")) {
+            this.listProveedor(cnx, request, response);
+        }else if (accion.equals("nuevo")) {
+            this.newProveedor(cnx, request, response);
+        }else if (accion.equals("insertar")) {
+            this.addProveedor(cnx, request, response);
+        }else if (accion.equals("eliminar")) {
+            this.deleteProveedor(cnx, request, response);
+        }else if (accion.equals("consultar")) {
+            this.selectProveedor(cnx, request, response);
+        }else if (accion.equals("actualizar")) {
+            this.updateProveedor(cnx, request, response);
         }
     }
     
     private void listProveedor (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_CATEGORIA}");
+            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_PROVEEDOR}");
             ResultSet rs = sta.executeQuery();
             ArrayList<Proveedor> lista = new ArrayList<>();
             while (rs.next()) {
@@ -83,7 +71,7 @@ public class ServProveedor extends HttpServlet {
             }
             request.setAttribute("listar", lista);
             request.getRequestDispatcher("Pages/Proveedor/index.jsp").forward(request, response);
-        }catch(IOException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -97,7 +85,7 @@ public class ServProveedor extends HttpServlet {
             lista.add(p);
             request.setAttribute("gestion", lista);
             request.getRequestDispatcher("Pages/Proveedor/gestion.jsp").forward(request, response);
-        }catch(IOException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -112,21 +100,20 @@ public class ServProveedor extends HttpServlet {
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_INS_PROVEEDOR(?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
-            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
-                //se sustituyen los valores para los parametros
-                //en el mismo orden del stored procedure
-                sta.setString(1, codigo);
-                sta.setString(2, nombre);
-                
-                //se ejecuta el spr con los parametros
-                sta.executeUpdate();
-            }
+            sta.setString(1, codigo);
+            sta.setString(2, nombre);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
             
             //se redirige a la pagina de index
             this.listProveedor(cnx, request, response);
-        }catch(IOException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -140,18 +127,18 @@ public class ServProveedor extends HttpServlet {
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_DEL_PROVEEDOR(?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
             //se sustituyen los valores para los parametros
-            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
-                //se sustituyen los valores para los parametros
-                sta.setInt(1, idProveedor);
-                
-                //se ejecuta el spr con los parametros
-                sta.executeUpdate();
-            }
+            sta.setInt(1, idProveedor);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
             
             //se vuelve a cargar la pagina del index
             this.listProveedor(cnx, request, response);
-        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -164,6 +151,7 @@ public class ServProveedor extends HttpServlet {
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_SEL_PROVEEDOR_BY_ID(?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
@@ -180,9 +168,10 @@ public class ServProveedor extends HttpServlet {
                 );
                 lista.add(p);
             }
+            sta.close();
             request.setAttribute("gestion", lista);
-            request.getRequestDispatcher("Pages/PROVEEDOR/gestion.jsp").forward(request, response);
-        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+            request.getRequestDispatcher("Pages/Proveedor/gestion.jsp").forward(request, response);
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
@@ -198,26 +187,26 @@ public class ServProveedor extends HttpServlet {
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_UPD_PROVEEDOR(?, ?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
-            try (PreparedStatement sta = cnx.prepareCall(sb.toString())) {
-                //se sustituyen los valores para los parametros
-                //en el mismo orden del stored procedure
-                sta.setInt(1, idProveedor);
-                sta.setString(2, nombre);
-                sta.setString(3, codigo);
-                
-                //se ejecuta el spr con los parametros
-                sta.executeUpdate();
-            }
+            sta.setInt(1, idProveedor);
+            sta.setString(2, nombre);
+            sta.setString(3, codigo);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
             
             //se redirige a la pagina de index
             this.listProveedor(cnx, request, response);
-        }catch(IOException | NumberFormatException | SQLException | ServletException e) {
+        }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
-        private void defaultError (Exception e, HttpServletResponse response)
+    
+    private void defaultError (Exception e, HttpServletResponse response)
         throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */

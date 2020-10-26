@@ -38,6 +38,7 @@
                     <th>CODIGO</th>
                     <th>MARCA</th>
                     <th>CATEGORIA</th>
+                    <th>PROVEEDOR</th>
                     <th>NOMBRE</th>
                     <th>PRECIO</th>
                     <th>EXISTENCIA</th>
@@ -55,6 +56,7 @@
                             <td><%= pro.getCodProducto()%></td>
                             <td><%= pro.getIdMarca()%></td>
                             <td><%= pro.getIdCategoria()%></td>
+                            <td><%= pro.getIdProveedor()%></td>
                             <td><%= pro.getNombre()%></td>
                             <td><%= pro.getPrecio()%></td>
                             <td><%= pro.getExistencia()%></td>
@@ -63,7 +65,7 @@
                                 <a href="ServProducto?accion=consultar&id=<%= pro.getIdProducto()%>">
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
-                                <a href="ServProducto?accion=eliminar&id=<%= pro.getIdProducto()%>" onclick="return confirm('¿Desea eliminar el empleado con codigo: <%= pro.getCodProducto()%>?')">
+                                <a href="ServProducto?accion=eliminar&id=<%= pro.getIdProducto()%>" onclick="return confirm('¿Desea eliminar el Producto con codigo: <%= pro.getCodProducto()%>?')">
                                     <img src="imagenes/delete_icon.png" width="30" title="Editar">
                                 </a>
                             </td>
