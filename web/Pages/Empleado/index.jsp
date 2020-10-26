@@ -15,6 +15,14 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+        %>
         <h1>Listado de Empleados</h1>
         <table>
             <tbody>
@@ -25,7 +33,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="index.jsp">
+                        <a href="principal.jsp">
                             <img src="imagenes/exit_icon.png" width="30" title="Salir">
                         </a>
                     </td>

@@ -26,7 +26,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="index.jsp">
+                        <a href="principal.jsp">
                             <img src="imagenes/exit_icon.png" width="30" title="Salir">
                         </a>
                     </td>

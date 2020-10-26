@@ -19,7 +19,15 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
-        <h1>Gestion de Formas de Pago</h1>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+        %>
+        <h1>Gestion de Empleado</h1>
         <form method="POST">
             <table border="1" class="table table-striped table-bordered">
                 <tbody>
@@ -31,37 +39,38 @@
                         <tr>
                             <td>CODIGO DE TRABAJADOR</td>
                             <td>
-                                <input type="text" name="txtCodigo" value="<%= emp.getCodTrab()%>">
+                                <input type="text" name="txtCodigo" value="<%= emp.getCodTrab()%>" required>
                             </td>
                         </tr>
                         <tr>
                             <td>USUARIO</td>
                             <td>
-                                <input type="text" name="txtUsuario" value="<%= emp.getUsuario()%>">
+                                <input type="text" name="txtUsuario" value="<%= emp.getUsuario()%>" required>
                             </td>
                         </tr>
                         <tr>
                             <td>CONTRASEÑA</td>
                             <td>
-                                <input type="text" name="txtPass" value="<%= emp.getPass()%>">
+                                <input id="pass1" type="password" name="txtPass" value="<%= emp.getPass()%>" required>
+                                <input type="checkbox" onclick="verPass()">Ver contraseña
                             </td>
                         </tr>
                         <tr>
                             <td>NOMBRE</td>
                             <td>
-                                <input type="text" name="txtNombre" value="<%= emp.getNombre()%>">
+                                <input type="text" name="txtNombre" value="<%= emp.getNombre()%>" required>
                             </td>
                         </tr>
                         <tr>
                             <td>APELLIDO</td>
                             <td>
-                                <input type="text" name="txtApellido" value="<%= emp.getApellido()%>">
+                                <input type="text" name="txtApellido" value="<%= emp.getApellido()%>" required>
                             </td>
                         </tr>
                         <tr>
                             <td>FECHA DE NACIMIENTO</td>
                             <td>
-                                <input type="text" name="txtFechanac" value="<%= emp.getFechaNacimiento()%>">
+                                <input type="date" name="txtFechanac" value="<%= emp.getFechaNacimiento()%>">
                             </td>
                         </tr>
                         <tr>
@@ -79,7 +88,7 @@
                         <tr>
                             <td>D.P.I.</td>
                             <td>
-                                <input type="text" name="txtDpi" value="<%= emp.getDpi()%>">
+                                <input type="text" name="txtDpi" value="<%= emp.getDpi()%>" required>
                             </td>
                         </tr>
                         <tr>
@@ -148,6 +157,16 @@
                 </tbody>
             </table>
         </form>
+        <script>
+            function verPass() {
+              var x = document.getElementById("pass1");
+              if (x.type === "password") {
+                x.type = "text";
+              } else {
+                x.type = "password";
+              }
+            }
+        </script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
