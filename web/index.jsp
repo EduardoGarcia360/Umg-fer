@@ -37,27 +37,25 @@
         <div class="limiter">
             <div class="container-login100">
                 <div class="wrap-login100 p-t-50 p-b-90">
-                    <form class="login100-form validate-form flex-sb flex-w">
+                    <form class="login100-form validate-form flex-sb flex-w" action="Validar" method="POST">
                         <span class="login100-form-title p-b-51">
                             Sistema - Ferreteria
                         </span>
 
 
-                        <div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
-                            <input class="input100" type="text" name="username" placeholder="Username">
+                        <div class="wrap-input100 validate-input m-b-16" data-validate = "Ingrese el usuario">
+                            <input class="input100" type="text" name="txtUsuario" placeholder="Usuario">
                             <span class="focus-input100"></span>
                         </div>
 
 
-                        <div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
-                            <input class="input100" type="password" name="pass" placeholder="Password">
+                        <div class="wrap-input100 validate-input m-b-16" data-validate = "Ingrese la contraseña">
+                            <input class="input100" type="password" name="txtPass" placeholder="Contraseña">
                             <span class="focus-input100"></span>
                         </div>
 
                         <div class="container-login100-form-btn m-t-17">
-                            <button class="login100-form-btn">
-                                Iniciar Sesión
-                            </button>
+                            <input type="submit" name="accion" value="Ingresar" class="login100-form-btn">
                         </div>
                     </form>
                 </div>
@@ -80,5 +78,10 @@
 	<script src="vendor/countdowntime/countdowntime.js"></script>
 <!--===============================================================================================-->
 	<script src="js/main.js"></script>
+        <style>
+            .login100-form-btn {
+                background-color: #42A5F5 !important;
+            }
+        </style>
     </body>
 </html>

@@ -5,25 +5,35 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="Clases.Empleado"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Principal</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <style>
+            .margen-der {
+                margin-right: 10px;
+            }
+        </style>
     </head>
     <body>
+        <% 
+            Empleado emp = (Empleado)request.getAttribute("usuario");
+            String nombre = emp.getNombre() + " " + emp.getApellido();
+        %>
         <nav class="navbar navbar-expand-lg navbar-light bg-info">
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
               <ul class="navbar-nav">
-                <li class="nav-item active">
-                  <a class="nav-link" href="ServEmpleado?accion=listar">Empleados</a>
+                <li class="nav-item active margen-der">
+                  <a class="btn btn-outline-light" href="ServEmpleado?accion=listar">Empleados</a>
                 </li>
-                <li class="nav-item active">
-                  <a class="nav-link" href="ServProducto?accion=listar">Productos</a>
+                <li class="nav-item active margen-der">
+                  <a class="btn btn-outline-light" href="ServProducto?accion=listar">Productos</a>
                 </li>
-                <li class="nav-item active dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item active dropdown margen-der">
+                  <a class="btn btn-outline-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Catalogos
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -35,6 +45,16 @@
                   </div>
                 </li>
               </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%= nombre%>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
             </div>
         </nav>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
