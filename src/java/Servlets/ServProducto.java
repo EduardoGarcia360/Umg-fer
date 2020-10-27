@@ -34,9 +34,9 @@ public class ServProducto extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-String accion = request.getParameter("accion");
+        String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
         if (accion.equals("listar")) {
             this.listProducto(cnx, request, response);
@@ -60,7 +60,7 @@ String accion = request.getParameter("accion");
             ResultSet rs = sta.executeQuery();
             ArrayList<Producto> lista = new ArrayList<>();
             while (rs.next()) {
-                Producto pro = new Producto(
+                Producto pro = new Producto( 
                     rs.getInt(1),
                     rs.getInt(2),
                     rs.getInt(3),
@@ -71,7 +71,10 @@ String accion = request.getParameter("accion");
                     rs.getString(8),
                     rs.getString(9),
                     rs.getString(10),
-                    rs.getString(11)
+                    rs.getString(11),
+                    rs.getString(12),
+                    rs.getString(13),
+                    rs.getString(14)
                 );
                 lista.add(pro);
             }
@@ -87,7 +90,7 @@ String accion = request.getParameter("accion");
         try {
             ArrayList<Producto> lista = new ArrayList<>();
             //al ser nuevo se genera un objeto vacio
-            Producto pro = new Producto(0, 0, 0, 0, "", "", "", "", "", "", "");
+            Producto pro = new Producto(0, 0, 0, 0, "", "", "", "", "", "", "", "", "", "");
             lista.add(pro);
             request.setAttribute("gestion", lista);
             request.getRequestDispatcher("Pages/Producto/gestion.jsp").forward(request, response);
@@ -108,8 +111,8 @@ String accion = request.getParameter("accion");
             String precio = request.getParameter("txtPrecio");
             String existencia = request.getParameter("txtExistencia");
             String orden_compra = request.getParameter("txtOrden_Compra");
-            String serie_factura = request.getParameter("txtSerie_Factura");
-            String numero_factura = request.getParameter("txtNumero_Factura");
+            String serie_factura = request.getParameter("txtSerie_fac");
+            String numero_factura = request.getParameter("txtNumero_fac");
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -119,15 +122,15 @@ String accion = request.getParameter("accion");
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
             sta.setInt(1, idMarca);
-            sta.setInt(2, idCategoria);
-            sta.setInt(3, idProveedor);
-            sta.setString(4, codProducto);
-            sta.setString(5, nombre);
-            sta.setString(6, precio);
-            sta.setString(7, existencia);
-            sta.setString(8, orden_compra);
-            sta.setString(9, serie_factura);
-            sta.setString(10, numero_factura);
+            sta.setString(2, codProducto);
+            sta.setString(3, nombre);
+            sta.setString(4, precio);
+            sta.setString(5, existencia);
+            sta.setString(6, orden_compra);
+            sta.setString(7, serie_factura);
+            sta.setString(8, numero_factura);
+            sta.setInt(9, idCategoria);
+            sta.setInt(10, idProveedor);
             
             //se ejecuta el spr con los parametros
             sta.executeUpdate();
@@ -144,18 +147,14 @@ String accion = request.getParameter("accion");
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idMarca = Integer.parseInt(request.getParameter("id"));
-            int idCategoria = Integer.parseInt(request.getParameter("id"));
             int idProveedor = Integer.parseInt(request.getParameter("id"));
-            
+
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_DEL_PRODUCTO(?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
-            sta.setInt(1, idMarca);
-            sta.setInt(1, idCategoria);
             sta.setInt(1, idProveedor);
             
             //se ejecuta el spr con los parametros
@@ -173,9 +172,7 @@ String accion = request.getParameter("accion");
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idMarca = Integer.parseInt(request.getParameter("id"));
-            int idCategoria = Integer.parseInt(request.getParameter("id"));
-            int idProveedor = Integer.parseInt(request.getParameter("id"));
+            int idProducto = Integer.parseInt(request.getParameter("id"));
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -183,15 +180,14 @@ String accion = request.getParameter("accion");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
-            sta.setInt(1, idMarca);
-            sta.setInt(1, idCategoria);
-            sta.setInt(1, idProveedor);
-            
+            sta.setInt(1, idProducto);
+  
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
             ArrayList<Producto> lista = new ArrayList<>();
             while (rs.next()) {
+                //cambiar
                 Producto pro = new Producto(
                     rs.getInt(1),
                     rs.getInt(2),
@@ -203,7 +199,10 @@ String accion = request.getParameter("accion");
                     rs.getString(8),
                     rs.getString(9),
                     rs.getString(10),
-                    rs.getString(11)
+                    rs.getString(11),
+                    rs.getString(12),
+                    rs.getString(13),
+                    rs.getString(14)    
                 );
                 lista.add(pro);
             }
@@ -228,8 +227,8 @@ String accion = request.getParameter("accion");
             String precio = request.getParameter("txtPrecio");
             String existencia = request.getParameter("txtExistencia");
             String orden_compra = request.getParameter("txtOrden_Compra");
-            String serie_factura = request.getParameter("txtSerie_Factura");
-            String numero_factura = request.getParameter("txtNumero_Factura");
+            String serie_factura = request.getParameter("txtSerie_fac");
+            String numero_factura = request.getParameter("txtNumero_fac");
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -249,7 +248,7 @@ String accion = request.getParameter("accion");
             sta.setString(9, orden_compra);
             sta.setString(10, serie_factura);
             sta.setString(11, numero_factura);
-            
+   
             //se ejecuta el spr con los parametros
             sta.executeUpdate();
             sta.close();

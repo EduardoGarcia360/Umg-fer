@@ -19,6 +19,14 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+        %>
         <h1>Gestion de Productos</h1>
         <form method="POST">
             <table border="1" class="table table-striped table-bordered">
@@ -61,25 +69,76 @@
                                 </select>
                             </td>
                         </tr>
-                        <% 
-                            if (pro.getIdProducto() == 0) {
-                        %>
                         <tr>
                             <td>CATEGORIA</td>
                              <td>
-                                <input type="text" name="txtCategoria" value="<%= pro.getIdCategoria()%>">
+                                <select name="selectCategoria">
+                                    <%
+                                        try{
+                                            Connection cnx = Conexion.getConexion();
+                                            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_COMBO_CATEGORIA}");
+                                            ResultSet rs = sta.executeQuery();
+                                            while (rs.next()) {
+                                                int idCat = rs.getInt(1);
+                                                String cat = rs.getString(2);
+                                                if (idCat == pro.getIdProducto()) {
+                                    %>
+                                                <option value="<%= idCat%>" selected>
+                                                    <%= cat%>
+                                                </option>
+                                    <%
+                                                } else {
+                                    %>
+                                                <option value="<%= idCat%>">
+                                                    <%= cat%>
+                                                </option>
+                                    <%
+                                                }
+                                            }
+                                        } catch (Exception e) {
+                                            out.print(e.getMessage());
+                                        }
+                                    %>
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <td>PROVEEDOR</td>
                             <td>
-                                <input type="text" name="txtProveedor" value="<%= pro.getIdProveedor()%>">
+                                <select name="selectProveedor">
+                                    <%
+                                        try{
+                                            Connection cnx = Conexion.getConexion();
+                                            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_COMBO_PROVEEDOR}");
+                                            ResultSet rs = sta.executeQuery();
+                                            while (rs.next()) {
+                                                int idProv = rs.getInt(1);
+                                                String prov = rs.getString(2);
+                                                if (idProv == pro.getIdProducto()) {
+                                    %>
+                                                <option value="<%= idProv%>" selected>
+                                                    <%= prov%>
+                                                </option>
+                                    <%
+                                                } else {
+                                    %>
+                                                <option value="<%= idProv%>">
+                                                    <%= prov%>
+                                                </option>
+                                    <%
+                                                }
+                                            }
+                                        } catch (Exception e) {
+                                            out.print(e.getMessage());
+                                        }
+                                    %>
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <td>CODIGO DE PRODUCTO</td>
                             <td>
-                                <input type="text" name="txtCodigo" value="<%= pro.getCodProducto()%>">
+                                <input type="text" name="txtCodProducto" value="<%= pro.getCodProducto()%>">
                             </td>
                         </tr>
                         <tr>
@@ -101,6 +160,12 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>ORDEN DE COMPRA</td>
+                            <td>
+                                <input type="text" name="txtOrden_Compra" value="<%= pro.getOrden_compra()%>">
+                            </td>
+                        </tr>
+                        <tr>
                             <td>SERIE_FACTURA</td>
                             <td>
                                 <input type="text" name="txtSerie_fac" value="<%= pro.getSerie_factura()%>">
@@ -112,6 +177,9 @@
                                 <input type="text" name="txtNumero_fac" value="<%= pro.getNumero_factura()%>">
                             </td>
                         </tr>
+                        <% 
+                            if (pro.getIdProducto() == 0) {
+                        %>
                         <tr>
                             <td></td>
                             <td>

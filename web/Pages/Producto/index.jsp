@@ -15,6 +15,14 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+        %>
         <h1>Listado de Productos</h1>
         <table>
             <tbody>
@@ -42,7 +50,9 @@
                     <th>NOMBRE</th>
                     <th>PRECIO</th>
                     <th>EXISTENCIA</th>
+                    <th>ORDEN COMPRA</th>
                     <th>SERIE FACTURA</th>
+                    <th>NUMERO FACTURA</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -54,19 +64,21 @@
                         %>
                         <tr>
                             <td><%= pro.getCodProducto()%></td>
-                            <td><%= pro.getIdMarca()%></td>
-                            <td><%= pro.getIdCategoria()%></td>
-                            <td><%= pro.getIdProveedor()%></td>
+                            <td><%= pro.getNombreMarca()%></td>
+                            <td><%= pro.getNombreCate()%></td>
+                            <td><%= pro.getNombreProv()%></td>
                             <td><%= pro.getNombre()%></td>
                             <td><%= pro.getPrecio()%></td>
                             <td><%= pro.getExistencia()%></td>
+                            <td><%= pro.getOrden_compra()%></td>
                             <td><%= pro.getSerie_factura()%></td>
+                            <td><%= pro.getNumero_factura()%></td>
                             <td>
                                 <a href="ServProducto?accion=consultar&id=<%= pro.getIdProducto()%>">
                                     <img src="imagenes/edit_icon.png" width="30" title="Editar">
                                 </a>
                                 <a href="ServProducto?accion=eliminar&id=<%= pro.getIdProducto()%>" onclick="return confirm('¿Desea eliminar el Producto con codigo: <%= pro.getCodProducto()%>?')">
-                                    <img src="imagenes/delete_icon.png" width="30" title="Editar">
+                                    <img src="imagenes/delete_icon.png" width="30" title="Borrar">
                                 </a>
                             </td>
                         </tr>

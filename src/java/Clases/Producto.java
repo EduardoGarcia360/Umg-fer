@@ -12,8 +12,9 @@ package Clases;
 public class Producto {
     private int idProducto, idMarca, idCategoria, idProveedor;
     private String codProducto, nombre, precio, existencia, orden_compra, serie_factura, numero_factura;
+    private String nombreMarca, nombreCate, nombreProv;
 
-    public Producto(int idProducto, int idMarca, int idCategoria, int idProveedor, String codProducto, String nombre, String  precio, String existencia, String orden_compra, String serie_factura, String numero_factura) {
+    public Producto(int idProducto, int idMarca, int idCategoria, int idProveedor, String codProducto, String nombre, String precio, String existencia, String orden_compra, String serie_factura, String numero_factura, String nombreMarca, String nombreCate, String nombreProv) {
         this.idProducto = idProducto;
         this.idMarca = idMarca;
         this.idCategoria = idCategoria;
@@ -25,6 +26,9 @@ public class Producto {
         this.orden_compra = orden_compra;
         this.serie_factura = serie_factura;
         this.numero_factura = numero_factura;
+        this.nombreMarca = nombreMarca;
+        this.nombreCate = nombreCate;
+        this.nombreProv = nombreProv;
     }
 
     public int getIdProducto() {
@@ -114,4 +118,29 @@ public class Producto {
     public void setNumero_factura(String numero_factura) {
         this.numero_factura = numero_factura;
     }
+
+    public String getNombreMarca() {
+        return nombreMarca;
+    }
+
+    public void setNombreMarca(String nombreMarca) {
+        this.nombreMarca = nombreMarca;
+    }
+
+    public String getNombreCate() {
+        return nombreCate;
+    }
+
+    public void setNombreCate(String nombreCate) {
+        this.nombreCate = nombreCate;
+    }
+
+    public String getNombreProv() {
+        return nombreProv;
+    }
+
+    public void setNombreProv(String nombreProv) {
+        this.nombreProv = nombreProv;
+    }
+    
 }
