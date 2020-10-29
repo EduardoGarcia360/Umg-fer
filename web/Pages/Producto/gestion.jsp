@@ -138,43 +138,49 @@
                         <tr>
                             <td>CODIGO DE PRODUCTO</td>
                             <td>
-                                <input type="text" name="txtCodProducto" value="<%= pro.getCodProducto()%>">
+                                <input type="text" name="txtCodProducto" value="<%= pro.getCodProducto()%>" required>
                             </td>
                         </tr>
                         <tr>
                             <td>NOMBRE</td>
                             <td>
-                                <input type="text" name="txtNombre" value="<%= pro.getNombre()%>">
+                                <input type="text" name="txtNombre" value="<%= pro.getNombre()%>" required>
+                            </td>
                             </td>
                         </tr>
                         <tr>
                             <td>PRECIO</td>
                             <td>
-                                <input type="text" name="txtPrecio" value="<%= pro.getPrecio()%>">
+                                <input type="number" name="txtPrecio" step="0.01" value="<%= pro.getPrecio()%>" required>
+                            </td>
                             </td>
                         </tr>
                         <tr>
                             <td>EXISTENCIA</td>
                             <td>
-                                <input type="text" name="txtExistencia" value="<%= pro.getExistencia()%>">
+                                <input type="number" name="txtExistencia" value="<%= pro.getExistencia()%>" required>
+                            </td>
                             </td>
                         </tr>
                         <tr>
                             <td>ORDEN DE COMPRA</td>
                             <td>
-                                <input type="text" name="txtOrden_Compra" value="<%= pro.getOrden_compra()%>">
+                                <input type="text" name="txtOrden_Compra" value="<%= pro.getOrden_compra()%>" required>
+                            </td>
                             </td>
                         </tr>
                         <tr>
                             <td>SERIE_FACTURA</td>
                             <td>
-                                <input type="text" name="txtSerie_fac" value="<%= pro.getSerie_factura()%>">
+                                <input type="text" name="txtSerie_fac" value="<%= pro.getSerie_factura()%>" required>
+                            </td>
                             </td>
                         </tr>
                         <tr>
                             <td>NUMERO_FACTURA</td>
                             <td>
-                                <input type="text" name="txtNumero_fac" value="<%= pro.getNumero_factura()%>">
+                                <input type="text" name="txtNumero_fac" value="<%= pro.getNumero_factura()%>" required>
+                            </td>
                             </td>
                         </tr>
                         <% 
