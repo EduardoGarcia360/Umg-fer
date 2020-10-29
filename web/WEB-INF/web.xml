@@ -32,6 +32,18 @@
         <servlet-name>Validar</servlet-name>
         <servlet-class>Controlador.Validar</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServVenta</servlet-name>
+        <servlet-class>Servlets.ServVenta</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServCliente</servlet-name>
+        <servlet-class>Servlets.ServCliente</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServDetalle</servlet-name>
+        <servlet-class>Servlets.ServDetalle</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
@@ -63,6 +75,18 @@
     <servlet-mapping>
         <servlet-name>Validar</servlet-name>
         <url-pattern>/Validar</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServVenta</servlet-name>
+        <url-pattern>/ServVenta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServCliente</servlet-name>
+        <url-pattern>/ServCliente</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServDetalle</servlet-name>
+        <url-pattern>/ServDetalle</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
