@@ -12,7 +12,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Eduardo
  */
 public class ServDetalle extends HttpServlet {
-
+    ArrayList<Producto> listaAgregados;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -40,35 +42,76 @@ public class ServDetalle extends HttpServlet {
         Connection cnx = Conexion.getConexion();
         if (accion.equals("nuevo")) {
             this.nuevaVenta(cnx, request, response);
+        } else if (accion.equals("agregar")) {
+            this.selectProducto(cnx, request, response);
         }
     }
     
     private void nuevaVenta (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_PRODUCTO}");
+            listaAgregados = new ArrayList<>();
+            //al ser nuevo se genera un objeto vacio
+            Producto pro = new Producto(0, 0, 0, 0, "", "", "", "", "", "", "", "", "", "");
+            listaAgregados.add(pro);
+            request.setAttribute("total", "0.00");
+            request.setAttribute("listar", listaAgregados);
+            request.getRequestDispatcher("Pages/Venta/detalle.jsp").forward(request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void selectProducto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            //se obtienen los parametros
+            int idProducto = Integer.parseInt(request.getParameter("selectProducto"));
+            String cantidad = request.getParameter("txtCantidad");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_SEL_PRODUCTO_BY_ID(?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
+            //se sustituyen los valores para los parametros
+            sta.setInt(1, idProducto);
+            
+            //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
-            ArrayList<Producto> lista = new ArrayList<>();
+            
             while (rs.next()) {
-                Producto pro = new Producto( 
+                Producto pro = new Producto(
                     rs.getInt(1),
-                    rs.getInt(2),
-                    rs.getInt(3),
-                    rs.getInt(4),   
+                    0,
+                    0,
+                    0,
                     rs.getString(5),
                     rs.getString(6),
                     rs.getString(7),
-                    rs.getString(8),
-                    rs.getString(9),
-                    rs.getString(10),
-                    rs.getString(11),
-                    rs.getString(12),
-                    rs.getString(13),
-                    rs.getString(14)
+                    cantidad,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
                 );
-                lista.add(pro);
+                listaAgregados.add(pro);
             }
-            request.setAttribute("listar", lista);
+            sta.close();
+            
+            Iterator itr = listaAgregados.iterator();
+            float total = 0.00f;
+            while (itr.hasNext()) {
+                Producto prod = (Producto)itr.next();
+                if (prod.getIdProducto() != 0) {
+                    total += (Float.parseFloat(prod.getExistencia()) * Float.parseFloat(prod.getPrecio()));
+                }
+            }
+            DecimalFormat df = new DecimalFormat("#.##");
+            request.setAttribute("total", String.valueOf(df.format(total)));
+            request.setAttribute("listar", listaAgregados);
             request.getRequestDispatcher("Pages/Venta/detalle.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);

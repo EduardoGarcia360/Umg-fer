@@ -42,7 +42,6 @@ public class ServVenta extends HttpServlet {
     private void nuevaVenta (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            //request.setAttribute("listar", lista);
             request.getRequestDispatcher("Pages/Venta/index.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);

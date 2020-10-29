@@ -15,6 +15,14 @@
         
     </head>
     <body>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+        %>
         <div class="container">
             <div class="row">
                 <div class="col-md-auto" style="border-style: solid;margin-right: 10px;height: 260px;">

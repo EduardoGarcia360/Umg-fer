@@ -37,32 +37,43 @@
         </style>
     </head>
     <body>
-        <label for="selectProducto">Productos</label><br>
-        <select id="selProductos" name="selectProducto" onchange="clickSelectProducto()">
-            <%
-                try{
-                    Connection cnx = Conexion.getConexion();
-                    PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_COMBO_PRODUCTO}");
-                    ResultSet rs = sta.executeQuery();
-                    while (rs.next()) {
-                        int idProducto = rs.getInt(1);
-                        String producto = rs.getString(2);
-            %>
-                        <option value="<%= idProducto%>">
-                            <%= producto%>
-                        </option>
-            <%
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+            String total = (String)request.getAttribute("total");
+        %>
+        <form method="POST">
+            <label for="selectProducto">Productos</label><br>
+            <select id="selProductos" name="selectProducto" onchange="clickSelectProducto()">
+                <%
+                    try{
+                        Connection cnx = Conexion.getConexion();
+                        PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_COMBO_PRODUCTO}");
+                        ResultSet rs = sta.executeQuery();
+                        while (rs.next()) {
+                            int idProducto = rs.getInt(1);
+                            String producto = rs.getString(2);
+                %>
+                            <option value="<%= idProducto%>">
+                                <%= producto%>
+                            </option>
+                <%
+                        }
+                    } catch (Exception e) {
+                        out.print(e.getMessage());
                     }
-                } catch (Exception e) {
-                    out.print(e.getMessage());
-                }
-            %>
-        </select>
-        <br>
-        <label for="nit">Cantidad</label><br>
-        <input type="number" name="txtCantidad" min="0" value="0" step="1">
-        <br>
-        <button type="button" onclick="agregarFila()">Agregar</button>
+                %>
+            </select>
+            <br>
+            <label for="nit">Cantidad</label><br>
+            <input type="number" name="txtCantidad" min="0" value="0" step="1">
+            <br>
+            <input type="submit" name="btnGuardar" value="Agregar" onclick="form.action='ServDetalle?accion=agregar';">
+        </form>
         <br>
         <br>
         <table id="tablaProductos">
@@ -76,51 +87,26 @@
                 ArrayList<Producto> lista = (ArrayList<Producto>)request.getAttribute("listar");
                 for (int i = 0; i<lista.size(); i++){
                     Producto prod = lista.get(i);
+                    if (prod.getIdProducto() != 0) {
                     %>
-                    <tr>
-                        <td><%= prod.getCodProducto()%></td>
-                        <td><%= prod.getNombre()%></td>
-                        <td><%= prod.getPrecio()%></td>
-                        <!-- deje existencia porque funciona como la cantidad ingresada -->
-                        <td><%= prod.getExistencia()%></td>
-                    </tr>
+                        <tr>
+                            <td><%= prod.getCodProducto()%></td>
+                            <td><%= prod.getNombre()%></td>
+                            <td><%= prod.getPrecio()%></td>
+                            <!-- deje existencia porque funciona como la cantidad ingresada -->
+                            <td><%= prod.getExistencia()%></td>
+                        </tr>
                     <%
+                    }
                 }
                 %>
         </table>
+        <br>
+        <label for="txtTotal">Total</label>
+        <br>
+        <input type="text" name="txtTotal" value="<%= total%>" disabled>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-        <script>
-            function agregarFila() {
-              var table = document.getElementById("tablaProductos");
-              var row = table.insertRow(-1);
-              var cell1 = row.insertCell(0);
-              var cell2 = row.insertCell(1);
-              var cell3 = row.insertCell(2);
-              var cell4 = row.insertCell(3);
-              cell1.innerHTML = "NEW CELL1";
-              cell2.innerHTML = "NEW CELL2";
-              cell3.innerHTML = "NEW CELL2";
-              cell4.innerHTML = "NEW CELL2";
-            }
-            /*function clickSelectProducto() {
-                var selectBox = document.getElementById("selProductos");
-                var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-                try{
-                    Connection cnx = Conexion.getConexion();
-                    PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_COMBO_PRODUCTO}");
-                    ResultSet rs = sta.executeQuery();
-                    while (rs.next()) {
-                        //int idProducto = rs.getInt(1);
-                        String producto = rs.getString(2);
-                        alert(producto);
-                    }
-                } catch (Exception e) {
-                    out.print(e.getMessage());
-                }
-                //alert(selectedValue);
-            }*/
-        </script>
     </body>
 </html>
