@@ -95,6 +95,7 @@ public class Validar extends HttpServlet {
             if (rs.next()) {
                 HttpSession sesion = request.getSession();
                 String nombre_completo = rs.getString(3) + " " + rs.getString(4);
+                sesion.setAttribute("idEmpleado", rs.getInt(1));
                 sesion.setAttribute("nombre", nombre_completo);
                 sesion.setAttribute("codEmp", rs.getString(2));
                 sesion.setAttribute("puesto", rs.getString(5));

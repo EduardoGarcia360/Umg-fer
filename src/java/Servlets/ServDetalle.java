@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ServDetalle extends HttpServlet {
     ArrayList<Producto> listaAgregados;
+    int idCliente;
+    float total = 0.00f;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -44,12 +47,18 @@ public class ServDetalle extends HttpServlet {
             this.nuevaVenta(cnx, request, response);
         } else if (accion.equals("agregar")) {
             this.selectProducto(cnx, request, response);
+        } else if (accion.equals("buscar")) {
+            this.consultarCliente(cnx, request, response);
+        } else if (accion.equals("pedido")) {
+            //this.verLista(cnx, request, response);
+            this.agregarPedido(cnx, request, response);
         }
     }
     
     private void nuevaVenta (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
+            idCliente = 0;
             listaAgregados = new ArrayList<>();
             //al ser nuevo se genera un objeto vacio
             Producto pro = new Producto(0, 0, 0, 0, "", "", "", "", "", "", "", "", "", "");
@@ -102,7 +111,7 @@ public class ServDetalle extends HttpServlet {
             sta.close();
             
             Iterator itr = listaAgregados.iterator();
-            float total = 0.00f;
+            total = 0.00f;
             while (itr.hasNext()) {
                 Producto prod = (Producto)itr.next();
                 if (prod.getIdProducto() != 0) {
@@ -113,6 +122,139 @@ public class ServDetalle extends HttpServlet {
             request.setAttribute("total", String.valueOf(df.format(total)));
             request.setAttribute("listar", listaAgregados);
             request.getRequestDispatcher("Pages/Venta/detalle.jsp").forward(request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void consultarCliente (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            String nit = request.getParameter("txtNit");
+            String nombre = request.getParameter("txtNombre");
+            String direccion = request.getParameter("txtDireccion");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_INS_UPD_CLIENTE(?, ?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
+            //se sustituyen los valores para los parametros
+            sta.setString(1, nit);
+            sta.setString(2, nombre);
+            sta.setString(3, direccion);
+            
+            //se ejecuta el spr con los parametros
+            ResultSet rs = sta.executeQuery();
+            
+            //se almacenan los valores
+            while (rs.next()) {
+                idCliente = rs.getInt(1); //variable global
+                nombre = rs.getString(2);
+                direccion = rs.getString(3);
+                nit = rs.getString(4);
+            }
+            sta.close();
+            
+            request.setAttribute("idCliente", idCliente);
+            request.setAttribute("nombre", nombre);
+            request.setAttribute("direccion", direccion);
+            request.setAttribute("nit", nit);
+            request.getRequestDispatcher("Pages/Venta/cliente.jsp").forward(request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void agregarPedido (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        try {
+            HttpSession sesion = request.getSession();
+            int idEmpleado = (int)sesion.getAttribute("idEmpleado");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_INS_FACTURA(?, ?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
+            //se sustituyen los valores para los parametros
+            sta.setInt(1, idEmpleado);
+            sta.setInt(2, idCliente);
+            sta.setFloat(3, total);
+            
+            //se ejecuta el spr con los parametros
+            ResultSet rs = sta.executeQuery();
+            
+            //se almacena el id factura generado
+            int idFactura = 0;
+            while (rs.next()) {
+                idFactura = rs.getInt(1);
+            }
+            sta.close();
+            //se inserta el detalle
+            this.agregarDetalle(cnx, request, response, idFactura);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void agregarDetalle (Connection cnx, HttpServletRequest request, HttpServletResponse response, int idFactura)
+        throws ServletException, IOException {
+        try {
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_INS_DETALLE(?, ?, ?, ?)}");
+            PreparedStatement sta;
+            
+            //se itera la lista
+            Iterator itr = listaAgregados.iterator();
+            while (itr.hasNext()) {
+                Producto prod = (Producto)itr.next();
+                if (prod.getIdProducto() != 0) {
+                    sta = cnx.prepareCall(sb.toString());
+
+                    //se sustituyen los valores para los parametros
+                    sta.setInt(1, prod.getIdProducto());
+                    sta.setInt(2, idFactura);
+                    sta.setInt(3, Integer.parseInt(prod.getExistencia()));
+                    sta.setFloat(4, Float.parseFloat(prod.getPrecio()));
+
+                    //se ejecuta el spr con los parametros
+                    sta.executeUpdate();
+                    sta.close();
+                }
+            }
+            request.getRequestDispatcher("principal.jsp").forward(request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    //metodo que sirve para listar en pantalla el contenido de la lista de productos agregados
+    private void verLista (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        try {
+            Iterator itr = listaAgregados.iterator();
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Error</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                while (itr.hasNext()) {
+                    Producto prod = (Producto)itr.next();
+                    if (prod.getIdProducto() != 0) {    
+                        out.println("<h1>id producto: " + prod.getIdProducto() + "</h1>");
+                        out.println("<h1>id factura: idfactura</h1>");
+                        out.println("<h1>cantidad: " + Integer.parseInt(prod.getExistencia()) + "</h1>");
+                        out.println("<h>precio: " + Float.parseFloat(prod.getPrecio()) + "</h1>");
+                        out.println("<h>-------------------</h1>");
+                    }
+                }
+                out.println("</body>");
+                out.println("</html>");
+            }
         }catch(Exception e) {
             this.defaultError(e, response);
         }

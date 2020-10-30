@@ -13,14 +13,38 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <body>
+        <% 
+            //cuando no hay sesion iniciada retorna al login
+            String codEmp = (String)session.getAttribute("codEmp");
+            if(codEmp == null){
+                response.sendRedirect("index.jsp");
+                return;
+            }
+            String nombre = (String)request.getAttribute("nombre");
+            if (nombre == null){
+                nombre = "";
+            }
+            String direccion = (String)request.getAttribute("direccion");
+            if (direccion == null){
+                direccion = "";
+            }
+            String nit = (String)request.getAttribute("nit");
+            if (nit == null){
+                nit = "C/F";
+            }
+        %>
         <form id="formCliente" action="" method="POST">
             <label for="nit">NIT</label><br>
-            <input type="text" name="txtNit" value="C/F"><br>
+            <input type="text" name="txtNit" value="<%= nit%>">
+            <br>
             <label for="nombre">Nombre</label><br>
-            <input type="text" name="txtNombre"><br>
+            <input type="text" name="txtNombre" value="<%= nombre%>">
+            <br>
             <label for="direccion">Dirección</label><br>
-            <input type="text" name="txtDireccion"><br><br>
-            <input type="submit" value="Buscar">
+            <input type="text" name="txtDireccion" value="<%= direccion%>">
+            <br>
+            <br>
+            <input type="submit" value="Buscar" onclick="form.action='ServDetalle?accion=buscar';">
         </form>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
