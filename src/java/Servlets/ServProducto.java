@@ -147,7 +147,7 @@ public class ServProducto extends HttpServlet {
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idProveedor = Integer.parseInt(request.getParameter("id"));
+            int idProducto = Integer.parseInt(request.getParameter("id"));
 
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -155,7 +155,7 @@ public class ServProducto extends HttpServlet {
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
-            sta.setInt(1, idProveedor);
+            sta.setInt(1, idProducto);
             
             //se ejecuta el spr con los parametros
             sta.executeUpdate();
