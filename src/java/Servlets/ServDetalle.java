@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +51,7 @@ public class ServDetalle extends HttpServlet {
             this.consultarCliente(cnx, request, response);
         } else if (accion.equals("pedido")) {
             //this.verLista(cnx, request, response);
-            this.agregarDetalle(cnx, request, response, 1);
+            this.agregarPedido(cnx, request, response);
         }
     }
     
@@ -231,6 +230,7 @@ public class ServDetalle extends HttpServlet {
         }
     }
     
+    //metodo que sirve para listar en pantalla el contenido de la lista de productos agregados
     private void verLista (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException{
         try {
@@ -249,6 +249,7 @@ public class ServDetalle extends HttpServlet {
                         out.println("<h1>id factura: idfactura</h1>");
                         out.println("<h1>cantidad: " + Integer.parseInt(prod.getExistencia()) + "</h1>");
                         out.println("<h>precio: " + Float.parseFloat(prod.getPrecio()) + "</h1>");
+                        out.println("<h>-------------------</h1>");
                     }
                 }
                 out.println("</body>");
