@@ -34,6 +34,9 @@
                 <li class="nav-item active margen-der">
                     <a class="btn btn-outline-light" href="ServVenta?accion=nuevo" target="myFrame">Venta</a>
                 </li>
+                <li class="nav-item active margen-der">
+                    <a class="btn btn-outline-light" href="ServCaja?accion=nuevo" target="myFrame">Caja</a>
+                </li>
                 <li class="nav-item active dropdown margen-der">
                   <a class="btn btn-outline-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Catalogos
