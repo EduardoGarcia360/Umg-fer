@@ -54,7 +54,7 @@ public class ServCaja extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ServCaja</title>");            
+            out.println("<title>ERROR</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Error Caja retornado: " + e.getMessage() + "</h1>");

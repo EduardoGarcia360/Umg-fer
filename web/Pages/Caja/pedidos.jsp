@@ -7,8 +7,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<table id="tablaProductos">
-            <label for="pagar">Listado de Pedidos</label><br>
-        </table>
+    <label for="pagar">Listado de Pedidos</label><br>      
+    <table id="tablaProductos">
+            <tr>
+              <th>PEDIDO NO.</th>
+              <th>CLIENTE</th>
+              <th>TOTAL</th>
+              <th>ACCION</th>
+            </tr>
+    </table>
+     <form method="POST">
+            <input type="submit" name="btnPedido" value="Agregar Pedido" onclick="form.action='ServDetalle?accion=pedido';">
+        </form>
 </html>
    
