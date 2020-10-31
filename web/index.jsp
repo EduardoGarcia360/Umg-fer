@@ -62,6 +62,15 @@
             </div>
 	</div>
         <!--FUENTE: https://colorlib.com/wp/template/login-form-v10/ -->
+        <!-- EJEMPLO AGREGAR JASPER REPORTS-->
+        <!-- https://www.youtube.com/watch?v=39ERiBV4wAs 
+            las librerias en el video se pueden descargar de:
+            http://plugins.netbeans.org/plugin/4425/ireport
+        -->
+        <!-- https://www.youtube.com/watch?v=AbawnPImW_g 
+            los archivos jar se pueden descargar de:
+            https://jar-download.com/artifacts/net.sf.jasperreports/jasperreports/6.3.0/source-code
+        -->
 <!--===============================================================================================-->
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
