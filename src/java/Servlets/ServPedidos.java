@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Clases.Detalle;
+import Clases.DetalleFactura;
 import Clases.Factura;
 import Utils.Conexion;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class ServPedidos extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
-        if (accion.equals("listar")) {
+        if (accion.equals("nuevo")) {
             this.selectPedidos(cnx, request, response);   
         } else if (accion.equals("Pedidos")) {
             this.consultarPedidos(cnx, request, response);
@@ -60,11 +60,17 @@ public class ServPedidos extends HttpServlet {
             ResultSet rs = sta.executeQuery();
             ArrayList<Factura> lista = new ArrayList<>();
             while (rs.next()) {
-                Factura pr = new Factura();
+                Factura pr = new Factura(
+                       rs.getInt(1),
+                       rs.getInt(2), 
+                       rs.getString(3), 
+                       rs.getString(4)
+                );
                 lista.add(pr);
             }
+            
             request.setAttribute("listar", lista);
-            request.getRequestDispatcher("Pages/Caja/index.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/Caja/pedidos.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
@@ -85,7 +91,7 @@ public class ServPedidos extends HttpServlet {
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
-            ArrayList<Detalle> lista = new ArrayList<>();
+            ArrayList<DetalleFactura> lista = new ArrayList<>();
             /*while (rs.next()) {
                 Detalle c = new Detalle(
                     rs.getInt(1),

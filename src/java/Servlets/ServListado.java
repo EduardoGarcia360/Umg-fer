@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import Clases.DetalleFactura;
 import Clases.Producto;
 import Utils.Conexion;
 import java.io.IOException;
@@ -16,9 +17,18 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  *
@@ -26,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ServListado extends HttpServlet {
 ArrayList<Producto> listaAgregados;
- int idFactura;
+ int idDetalleFactura;
  float total = 0.00f;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,190 +52,115 @@ ArrayList<Producto> listaAgregados;
         response.setContentType("text/html;charset=UTF-8");
         String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
-        if (accion.equals("listar")) {
-            this.verDetalle(cnx, request, response);
+        if (accion.equals("nuevo")) {
+            this.paginaEnBlanco(cnx, request, response);
         } else if (accion.equals("Pagar")) {
             this.updatePagar(cnx, request, response);
-            
-        }
-        //if == "detalle"
-        //if == "pagar"
-    }
-    
-    private void verDetalle (Connection cnx, HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        try {
-        PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_LISTADO}");
-            ResultSet rs = sta.executeQuery();    
-             ArrayList<Producto> lista = new ArrayList<>();
-            while (rs.next()) {
-                Producto p = new Producto(
-                        rs.getInt(1),
-                    rs.getString(2),
-                    rs.getString(3)
-                );
-                lista.add(p);
-            }
-            request.setAttribute("listar", lista);
-            request.getRequestDispatcher("Pages/Caja/index.jsp").forward(request, response);                     
-            Iterator itr = listaAgregados.iterator();
-            total = 0.00f;
-            while (itr.hasNext()) {
-                Producto prod = (Producto)itr.next();
-                if (prod.getIdProducto() != 0) {
-                    total += (Float.parseFloat(prod.getExistencia()) * Float.parseFloat(prod.getPrecio()));
-                }
-            }
-            DecimalFormat df = new DecimalFormat("#.##");
-            request.setAttribute("total", String.valueOf(df.format(total)));
-            request.setAttribute("listar", listaAgregados);
-            request.getRequestDispatcher("Pages/Caja/detalle.jsp").forward(request, response);
-        }catch(Exception e) {
-            this.defaultError(e, response);
+            //this.generarReporte(cnx, request, response);
+        } else if (accion.equals("factura")) {
+            this.generarReporte(cnx, request, response);
+        } else if (accion.equals("listar")) {
+            this.verDetalleFactura(cnx, request, response);
         }
     }
-        
-    /*
-        metodo de detalle
-        select * detalle d, producto p where d.id_producto = p.id_producto
-            
-        FOR DE LISTA QUE ESTA EN SERVDETALLE
-            TOTAL += PRECIO * CANTIDAD
-        retornas total
-        retornas como lista
-        dispacher hacia pages/caja/listado
-    */
     
-    /*
-        metodo de pagar
-        parametros a obtener:
-        id_factura
-        id_forma de pago
-        
-        SPR UPD PAGAR
-        UPDATE FACTURA
-        SET ID_FORMAPAGO = P_ID
-        ESTADO = 'P' --> G GUARDAR P PAGAR
-        WHERE ID_FACTURA = P_ID
-    */
-    private void selectProducto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void paginaEnBlanco (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        try {
-            //se obtienen los parametros
-            int idProducto = Integer.parseInt(request.getParameter("selectProducto"));
-            String cantidad = request.getParameter("txtCantidad");
-            
-            //se crean las conexiones para el spr
-            StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_SEL_PRODUCTO_BY_ID(?)}");
-            PreparedStatement sta = cnx.prepareCall(sb.toString());
-            
-            //se sustituyen los valores para los parametros
-            sta.setInt(1, idProducto);
-            
-            //se ejecuta el spr con los parametros
-            ResultSet rs = sta.executeQuery();
-            
-            while (rs.next()) {
-                Producto pro = new Producto(
-                    rs.getInt(1),
+        try {   
+             ArrayList<DetalleFactura> lista = new ArrayList<>();
+             DetalleFactura df = new DetalleFactura(
                     0,
-                    0,
-                    0,
-                    rs.getString(5),
-                    rs.getString(6),
-                    rs.getString(7),
-                    cantidad,
-                    "",
-                    "",
-                    "",
+                    "",    
                     "",
                     "",
                     ""
                 );
-                listaAgregados.add(pro);
-            }
-            sta.close();
-            
-            Iterator itr = listaAgregados.iterator();
-            total = 0.00f;
-            while (itr.hasNext()) {
-                Producto prod = (Producto)itr.next();
-                if (prod.getIdProducto() != 0) {
-                    total += (Float.parseFloat(prod.getExistencia()) * Float.parseFloat(prod.getPrecio()));
-                }
-            }
-            DecimalFormat df = new DecimalFormat("#.##");
-            request.setAttribute("total", String.valueOf(df.format(total)));
-            request.setAttribute("listar", listaAgregados);
-            request.getRequestDispatcher("Pages/Caja/detalle.jsp").forward(request, response);
+            lista.add(df);
+            request.setAttribute("listar", lista);
+            request.getRequestDispatcher("Pages/Caja/listado.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
-        private void consultarFactura (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    
+    private void verDetalleFactura (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            String nit = request.getParameter("txtNit");
-            String nombre = request.getParameter("txtNombre");
-            String direccion = request.getParameter("txtDireccion");
+            int idFactura = Integer.parseInt(request.getParameter("id"));
             
-            //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_INS_UPD_CLIENTE(?, ?, ?)}");
+            sb.append("{call SPR_SEL_GRID_LISTADO(?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
-            sta.setString(1, nit);
-            sta.setString(2, nombre);
-            sta.setString(3, direccion);
-            
-            //se ejecuta el spr con los parametros
-            ResultSet rs = sta.executeQuery();
-            
-            //se almacenan los valores
+            sta.setInt(1, idFactura);
+            ResultSet rs = sta.executeQuery();    
+             ArrayList<DetalleFactura> lista = new ArrayList<>();
             while (rs.next()) {
-                idFactura = rs.getInt(1); //variable global
-                nombre = rs.getString(2);
-                direccion = rs.getString(3);
-                nit = rs.getString(4);
+                DetalleFactura df = new DetalleFactura(
+                    rs.getInt(1),
+                    rs.getString(2),    
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getString(5)
+                );
+                lista.add(df);
             }
-            sta.close();
             
-            request.setAttribute("idCliente", idFactura);
-            request.setAttribute("nombre", nombre);
-            request.setAttribute("direccion", direccion);
-            request.setAttribute("nit", nit);
-            request.getRequestDispatcher("Pages/caja/detalle.jsp").forward(request, response);
+            request.setAttribute("idFactura", String.valueOf(idFactura));
+            request.setAttribute("listar", lista);
+            request.getRequestDispatcher("Pages/Caja/listado.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
+    
     private void updatePagar (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idFactura = Integer.parseInt(request.getParameter("id"));
-            int idCliente  = Integer.parseInt(request.getParameter("id"));
-            String total = request.getParameter("txtTotal");
+            int idFactura = Integer.parseInt(request.getParameter("idfactura"));
+            int idFormaPago = Integer.parseInt(request.getParameter("selectFormaPago"));
+            
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
-            sb.append("{call SPR_UPD_FACTURA(?, ?, ?)}");
+            sb.append("{call SPR_UPD_FACTURA(?, ?)}");
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
             //en el mismo orden del stored procedure
             sta.setInt(1, idFactura);
-            sta.setInt(2, idCliente);
-            sta.setString(3, total);
+            sta.setInt(2, idFormaPago);
             
             //se ejecuta el spr con los parametros
             sta.executeUpdate();
-            sta.close();
             
-            //se redirige a la pagina de index
-            //this.listPagar(cnx, request, response); <- no existe
+            //se genera el reporte de la factura del cliente
+            this.generarReporte(cnx, request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void generarReporte (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        try {
+            String idCliente = request.getParameter("idcliente");
+            JasperDesign jdesign = JRXmlLoader.load("C:\\Users\\juanc\\Documents\\NetBeansProjects\\Umg-fer\\src\\java\\Utils\\report1.jrxml");
+            //sustituir en el parametro
+            String query = "select c.id_cliente, c.nombre_completo, c.direccion as 'cliente_direccion', c.nit from cliente c where c.id_cliente = 1";
+            JRDesignQuery upQuery = new JRDesignQuery();
+            upQuery.setText(query);
+            
+            jdesign.setQuery(upQuery);
+            
+            JasperReport jreport = JasperCompileManager.compileReport(jdesign);
+            JasperPrint jprint = JasperFillManager.fillReport(jreport, null,  cnx);
+            
+            ServletOutputStream sos = response.getOutputStream();
+            response.setContentType("application/pdf");
+            JasperExportManager.exportReportToPdfStream(jprint, sos);
         }catch(Exception e) {
             this.defaultError(e, response);
         }

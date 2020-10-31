@@ -10,13 +10,15 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="Clases.Producto"%>
+<%@page import="Clases.DetalleFactura"%>
+
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Listado de Productos</title>
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <style>
             table {
               font-family: arial, sans-serif;
@@ -44,6 +46,8 @@
                 response.sendRedirect("index.jsp");
                 return;
             }
+            String total = (String)request.getAttribute("total");
+            String idFactura = (String)request.getAttribute("idFactura");
         %>
         <br>
         <br>
@@ -56,26 +60,26 @@
               <th>Cantidad</th>
             </tr>
             <%
-                ArrayList<Producto> lista = (ArrayList<Producto>)request.getAttribute("LISTA CON LOS DETALLES DE SERVLISTADO");
+                ArrayList<DetalleFactura> lista = (ArrayList<DetalleFactura>)request.getAttribute("listar");
                 for (int i = 0; i<lista.size(); i++){
-                    Producto prod = lista.get(i);
-                    if (prod.getIdProducto() != 0) {
+                    DetalleFactura df = lista.get(i);
+                    if (df.getIdDetalleFactura() != 0) {
                     %>
                         <tr>
-                            <td><%= prod.getCodProducto()%></td>
-                            <td><%= prod.getNombre()%></td>
-                            <td><%= prod.getPrecio()%></td>
-                            <!-- deje existencia porque funciona como la cantidad ingresada -->
-                            <td><%= prod.getExistencia()%></td>
+                            <td><%= df.getCodProducto()%></td>
+                            <td><%= df.getNombreProducto()%></td>
+                            <td><%= df.getPrecio()%></td>
+                            <td><%= df.getCantidad()%></td>
                         </tr>
                     <%
                     }
                 }
                 %>
         </table>
-        <form method="POST">
+        </table>
+        <form method="POST" target="_blank">
             <label for="selectFormaPago">FormaPago</label><br>
-            <select id="selFormaPago" name="selectFormaPago" onchange="clickSelectFormaPago()">
+            <select id="selFormaPago" name="selectFormaPago">
                 <%
                     try{
                         Connection cnx = Conexion.getConexion();
@@ -103,7 +107,7 @@
             <br>
             <input type="text" name="txtTotal" value="<%= total%>" disabled>
             <br>
-            <input type="submit" name="btnGuardar" value="Pagar" onclick="form.action='ServListado?accion=pagar';"
+            <input type="submit" name="btnGuardar" value="Pagar" onclick="form.action='ServListado?accion=pagar&idfactura=<%= idFactura%>';"
             <br>
         </form>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

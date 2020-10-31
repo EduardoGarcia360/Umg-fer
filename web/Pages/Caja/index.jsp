@@ -23,12 +23,12 @@
         %>
         <div class="container">
             <div class="row">
-                <div class="col-md-auto" style="border-style: solid;margin-right: 60px;height: 360px;">
+                <div class="col" style="border-style: solid;margin-right: 60px;height: 750px;">
                     <iframe src="ServPedidos?accion=nuevo" style="height: 100%; width: 100%; border: none;"></iframe>
                 </div>
-                <div class="col" style="border-style: solid;height: 750px;">
+                <!--<div class="col-md-auto" style="border-style: solid;height: 750px;">
                     <iframe src="ServListado?accion=nuevo" style="height: 100%; width: 100%; border: none;"></iframe>
-                </div>
+                </div>-->
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
