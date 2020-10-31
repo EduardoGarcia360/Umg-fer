@@ -82,6 +82,7 @@
               <th>Producto</th>
               <th>Precio</th>
               <th>Cantidad</th>
+              <th>Acción</th>
             </tr>
             <%
                 ArrayList<Producto> lista = (ArrayList<Producto>)request.getAttribute("listar");
@@ -95,6 +96,9 @@
                             <td><%= prod.getPrecio()%></td>
                             <!-- deje existencia porque funciona como la cantidad ingresada -->
                             <td><%= prod.getExistencia()%></td>
+                            <td>
+                                <input type="button" value="Remover" onclick="location.href='ServDetalle?accion=remover&id=<%= prod.getIdProducto()%>';" />
+                            </td>
                         </tr>
                     <%
                     }
@@ -106,7 +110,7 @@
         <br>
         <input type="text" name="txtTotal" value="<%= total%>" disabled>
         <br>
-        <form method="POST">
+        <form method="POST" target="_top">
             <input type="submit" name="btnPedido" value="Agregar Pedido" onclick="form.action='ServDetalle?accion=pedido';">
         </form>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

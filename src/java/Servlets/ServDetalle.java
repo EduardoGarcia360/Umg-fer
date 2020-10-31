@@ -16,10 +16,19 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  *
@@ -27,7 +36,7 @@ import javax.servlet.http.HttpSession;
  */
 public class ServDetalle extends HttpServlet {
     ArrayList<Producto> listaAgregados;
-    int idCliente;
+    int idCliente = 0;
     float total = 0.00f;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -50,8 +59,11 @@ public class ServDetalle extends HttpServlet {
         } else if (accion.equals("buscar")) {
             this.consultarCliente(cnx, request, response);
         } else if (accion.equals("pedido")) {
+            //this.generarReporte(cnx, request, response);
             //this.verLista(cnx, request, response);
             this.agregarPedido(cnx, request, response);
+        } else if (accion.equals("remover")) {
+            this.removerItem(request, response);
         }
     }
     
@@ -156,7 +168,6 @@ public class ServDetalle extends HttpServlet {
             }
             sta.close();
             
-            request.setAttribute("idCliente", idCliente);
             request.setAttribute("nombre", nombre);
             request.setAttribute("direccion", direccion);
             request.setAttribute("nit", nit);
@@ -180,7 +191,7 @@ public class ServDetalle extends HttpServlet {
             //se sustituyen los valores para los parametros
             sta.setInt(1, idEmpleado);
             sta.setInt(2, idCliente);
-            sta.setFloat(3, total);
+            sta.setString(3, String.valueOf(total));
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
@@ -217,7 +228,7 @@ public class ServDetalle extends HttpServlet {
                     sta.setInt(1, prod.getIdProducto());
                     sta.setInt(2, idFactura);
                     sta.setInt(3, Integer.parseInt(prod.getExistencia()));
-                    sta.setFloat(4, Float.parseFloat(prod.getPrecio()));
+                    sta.setString(4, String.valueOf(prod.getPrecio()));
 
                     //se ejecuta el spr con los parametros
                     sta.executeUpdate();
@@ -255,6 +266,63 @@ public class ServDetalle extends HttpServlet {
                 out.println("</body>");
                 out.println("</html>");
             }
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void removerItem (HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        try {
+            //obtiene el id del producto a eliminar
+            int idProducto = Integer.parseInt(request.getParameter("id"));
+            
+            //hace una iteracion y cuando encuentre el objeto lo remueve de la lista
+            Iterator itr = listaAgregados.iterator();
+            while (itr.hasNext()) {
+                Producto prod = (Producto)itr.next();
+                if (prod.getIdProducto() == idProducto) {    
+                    itr.remove();
+                    break;
+                }
+            }
+            
+            //iteracion para calcular la suma del total
+            Iterator itr2 = listaAgregados.iterator();
+            total = 0.00f;
+            while (itr2.hasNext()) {
+                Producto prod = (Producto)itr2.next();
+                if (prod.getIdProducto() != 0) {
+                    total += (Float.parseFloat(prod.getExistencia()) * Float.parseFloat(prod.getPrecio()));
+                }
+            }
+            
+            //retorna los valores
+            DecimalFormat df = new DecimalFormat("#.##");
+            request.setAttribute("total", String.valueOf(df.format(total)));
+            request.setAttribute("listar", listaAgregados);
+            request.getRequestDispatcher("Pages/Venta/detalle.jsp").forward(request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void generarReporte (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        try {
+            JasperDesign jdesign = JRXmlLoader.load("D:\\Proyectos\\NetBeansProjects\\Progra2_Ferreteria\\src\\java\\Utils\\report1.jrxml");
+            String query = "select c.id_cliente, c.nombre_completo, c.direccion as 'cliente_direccion', c.nit from cliente c where c.id_cliente = 3";
+            JRDesignQuery upQuery = new JRDesignQuery();
+            upQuery.setText(query);
+            
+            jdesign.setQuery(upQuery);
+            
+            JasperReport jreport = JasperCompileManager.compileReport(jdesign);
+            JasperPrint jprint = JasperFillManager.fillReport(jreport, null,  cnx);
+            
+            ServletOutputStream sos = response.getOutputStream();
+            response.setContentType("application/pdf");
+            JasperExportManager.exportReportToPdfStream(jprint, sos);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
