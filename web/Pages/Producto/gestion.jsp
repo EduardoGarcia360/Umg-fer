@@ -48,7 +48,7 @@
                                             while (rs.next()) {
                                                 int idMarca = rs.getInt(1);
                                                 String marca = rs.getString(2);
-                                                if (idMarca == pro.getIdProducto()) {
+                                                if (idMarca == pro.getIdMarca()) {
                                     %>
                                                 <option value="<%= idMarca%>" selected>
                                                     <%= marca%>
@@ -81,7 +81,7 @@
                                             while (rs.next()) {
                                                 int idCat = rs.getInt(1);
                                                 String cat = rs.getString(2);
-                                                if (idCat == pro.getIdProducto()) {
+                                                if (idCat == pro.getIdCategoria()) {
                                     %>
                                                 <option value="<%= idCat%>" selected>
                                                     <%= cat%>
@@ -114,7 +114,7 @@
                                             while (rs.next()) {
                                                 int idProv = rs.getInt(1);
                                                 String prov = rs.getString(2);
-                                                if (idProv == pro.getIdProducto()) {
+                                                if (idProv == pro.getIdProveedor()) {
                                     %>
                                                 <option value="<%= idProv%>" selected>
                                                     <%= prov%>
