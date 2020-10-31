@@ -44,6 +44,18 @@
         <servlet-name>ServDetalle</servlet-name>
         <servlet-class>Servlets.ServDetalle</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServCaja</servlet-name>
+        <servlet-class>Servlets.ServCaja</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServListado</servlet-name>
+        <servlet-class>Servlets.ServListado</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServPedidos</servlet-name>
+        <servlet-class>Servlets.ServPedidos</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServCategoria</servlet-name>
         <url-pattern>/ServCategoria</url-pattern>
@@ -87,6 +99,18 @@
     <servlet-mapping>
         <servlet-name>ServDetalle</servlet-name>
         <url-pattern>/ServDetalle</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServCaja</servlet-name>
+        <url-pattern>/ServCaja</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServListado</servlet-name>
+        <url-pattern>/ServListado</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServPedidos</servlet-name>
+        <url-pattern>/ServPedidos</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

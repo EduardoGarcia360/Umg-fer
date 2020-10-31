@@ -59,7 +59,7 @@ public class ServCliente extends HttpServlet {
             out.println("<title>Error</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Error Venta retornado: " + e.getMessage() + "</h1>");
+            out.println("<h1>Error Caja retornado: " + e.getMessage() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
