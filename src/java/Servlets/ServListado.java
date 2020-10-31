@@ -36,7 +36,7 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
  */
 public class ServListado extends HttpServlet {
 ArrayList<Producto> listaAgregados;
- int idDetalleFactura;
+ int idDetalleFactura, idCliente;
  float total = 0.00f;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -54,7 +54,7 @@ ArrayList<Producto> listaAgregados;
         Connection cnx = Conexion.getConexion();
         if (accion.equals("nuevo")) {
             this.paginaEnBlanco(cnx, request, response);
-        } else if (accion.equals("Pagar")) {
+        } else if (accion.equals("pagar")) {
             this.updatePagar(cnx, request, response);
             //this.generarReporte(cnx, request, response);
         } else if (accion.equals("factura")) {
@@ -87,6 +87,7 @@ ArrayList<Producto> listaAgregados;
         throws ServletException, IOException {
         try {
             int idFactura = Integer.parseInt(request.getParameter("id"));
+            idCliente = Integer.parseInt(request.getParameter("idcliente"));
             
             StringBuilder sb = new StringBuilder();
             sb.append("{call SPR_SEL_GRID_LISTADO(?)}");
@@ -149,7 +150,7 @@ ArrayList<Producto> listaAgregados;
             String idCliente = request.getParameter("idcliente");
             JasperDesign jdesign = JRXmlLoader.load("C:\\Users\\juanc\\Documents\\NetBeansProjects\\Umg-fer\\src\\java\\Utils\\report1.jrxml");
             //sustituir en el parametro
-            String query = "select c.id_cliente, c.nombre_completo, c.direccion as 'cliente_direccion', c.nit from cliente c where c.id_cliente = 1";
+            String query = "select c.id_cliente, c.nombre_completo, c.direccion as 'cliente_direccion', c.nit from cliente c where c.id_cliente = "+String.valueOf(idCliente);
             JRDesignQuery upQuery = new JRDesignQuery();
             upQuery.setText(query);
             

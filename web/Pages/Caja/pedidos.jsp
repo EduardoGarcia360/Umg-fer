@@ -56,7 +56,7 @@
                             <td><%= ft.getNombreCliente()%></td>
                             <td><%= ft.getTotal()%></td>
                             <td>
-                            <input type="button" value="Listar" onclick="location.href='ServListado?accion=listar&id=<%= ft.getIdFactura()%>';" />
+                            <input type="button" value="Listar" onclick="location.href='ServListado?accion=listar&id=<%= ft.getIdFactura()%>&idcliente=<%= ft.getIdCliente()%>';" />
                             </td>
                         </tr>
                     <%

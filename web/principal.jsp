@@ -56,7 +56,9 @@
                     <%= nombre%>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">¡Bienvenido!</a>
+                  <a class="dropdown-item">¡Bienvenido!</a>
+                  <a class="dropdown-item">Eduardo Garcia 5190-19-3473</a>
+                  <a class="dropdown-item">Juan Carlos 5190-17-6681</a>
                   <div class="dropdown-divider"></div>
                   <form action="Validar" method="POST" style="display:block; text-align: center;">
                       <input type="submit" name="accion" value="Salir" class="btn btn-primary">
