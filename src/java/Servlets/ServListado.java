@@ -147,7 +147,6 @@ ArrayList<Producto> listaAgregados;
     private void generarReporte (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException{
         try {
-            String idCliente = request.getParameter("idcliente");
             JasperDesign jdesign = JRXmlLoader.load("C:\\Users\\juanc\\Documents\\NetBeansProjects\\Umg-fer\\src\\java\\Utils\\report1.jrxml");
             //sustituir en el parametro
             String query = "select c.id_cliente, c.nombre_completo, c.direccion as 'cliente_direccion', c.nit from cliente c where c.id_cliente = "+String.valueOf(idCliente);
