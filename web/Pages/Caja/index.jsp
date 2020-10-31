@@ -23,7 +23,7 @@
         %>
         <div class="container">
             <div class="row">
-                <div class="col-md-auto" style="border-style: solid;margin-right: 10px;height: 260px;">
+                <div class="col-md-auto" style="border-style: solid;margin-right: 60px;height: 360px;">
                     <iframe src="ServPedidos?accion=nuevo" style="height: 100%; width: 100%; border: none;"></iframe>
                 </div>
                 <div class="col" style="border-style: solid;height: 750px;">

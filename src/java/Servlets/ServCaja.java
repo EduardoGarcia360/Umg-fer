@@ -35,11 +35,11 @@ public class ServCaja extends HttpServlet {
         String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
         if (accion.equals("nuevo")) {
-            this.nuevoPedido(cnx, request, response);
-        }
+            this.nuevoCaja(cnx, request, response);
+    }
     }
     
-    private void nuevoPedido (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void nuevoCaja (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             request.getRequestDispatcher("Pages/Caja/index.jsp").forward(request, response);
@@ -47,6 +47,7 @@ public class ServCaja extends HttpServlet {
             this.defaultError(e, response);
         }
     }
+    
     private void defaultError (Exception e, HttpServletResponse response)
         throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {

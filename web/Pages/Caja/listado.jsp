@@ -48,7 +48,7 @@
         <br>
         <br>
         <table id="tablaProductos">
-            <label for="pagar">Listado de Productos</label><br>
+            <label for="listar">Listado de Productos</label><br>
             <tr>
               <th>Codigo</th>
               <th>Producto</th>
@@ -56,7 +56,7 @@
               <th>Cantidad</th>
             </tr>
             <%
-                ArrayList<Producto> lista = (ArrayList<Producto>)request.getAttribute("listar");
+                ArrayList<Producto> lista = (ArrayList<Producto>)request.getAttribute("LISTA CON LOS DETALLES DE SERVLISTADO");
                 for (int i = 0; i<lista.size(); i++){
                     Producto prod = lista.get(i);
                     if (prod.getIdProducto() != 0) {
@@ -99,7 +99,12 @@
             <label for="pagar">Efectivo</label><br>
             <input type="number" name="txtEfectivo" min="0" value="0" step="any">
             <br>
-            <input type="submit" name="btnGuardar" value="Pagar" onclick="form.action='ServListado?accion=agregar';">
+            <label for="txtTotal">Total</label>
+            <br>
+            <input type="text" name="txtTotal" value="<%= total%>" disabled>
+            <br>
+            <input type="submit" name="btnGuardar" value="Pagar" onclick="form.action='ServListado?accion=pagar';"
+            <br>
         </form>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

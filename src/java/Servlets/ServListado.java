@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ServListado extends HttpServlet {
 ArrayList<Producto> listaAgregados;
+ int idFactura;
+ float total = 0.00f;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,38 +38,82 @@ ArrayList<Producto> listaAgregados;
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-                String accion = request.getParameter("accion");
+        String accion = request.getParameter("accion");
         Connection cnx = Conexion.getConexion();
-        if (accion.equals("nuevo")) {
-            this.nuevoCaja(cnx, request, response);
+        if (accion.equals("listar")) {
+            this.verDetalle(cnx, request, response);
         } else if (accion.equals("Pagar")) {
-            this.selectProducto(cnx, request, response);
+            this.updatePagar(cnx, request, response);
+            
         }
+        //if == "detalle"
+        //if == "pagar"
     }
     
-    private void nuevoCaja (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+    private void verDetalle (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
-            listaAgregados = new ArrayList<>();
-            //al ser nuevo se genera un objeto vacio
-            Producto pro = new Producto(0, 0, 0, 0, "", "", "", "", "", "", "", "", "", "");
-            listaAgregados.add(pro);
-            request.setAttribute("total", "0.00");
+        PreparedStatement sta = cnx.prepareStatement("{call SPR_SEL_GRID_LISTADO}");
+            ResultSet rs = sta.executeQuery();    
+             ArrayList<Producto> lista = new ArrayList<>();
+            while (rs.next()) {
+                Producto p = new Producto(
+                        rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3)
+                );
+                lista.add(p);
+            }
+            request.setAttribute("listar", lista);
+            request.getRequestDispatcher("Pages/Caja/index.jsp").forward(request, response);                     
+            Iterator itr = listaAgregados.iterator();
+            total = 0.00f;
+            while (itr.hasNext()) {
+                Producto prod = (Producto)itr.next();
+                if (prod.getIdProducto() != 0) {
+                    total += (Float.parseFloat(prod.getExistencia()) * Float.parseFloat(prod.getPrecio()));
+                }
+            }
+            DecimalFormat df = new DecimalFormat("#.##");
+            request.setAttribute("total", String.valueOf(df.format(total)));
             request.setAttribute("listar", listaAgregados);
-            request.getRequestDispatcher("Pages/Caja/listado.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/Caja/detalle.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
+        
+    /*
+        metodo de detalle
+        select * detalle d, producto p where d.id_producto = p.id_producto
+            
+        FOR DE LISTA QUE ESTA EN SERVDETALLE
+            TOTAL += PRECIO * CANTIDAD
+        retornas total
+        retornas como lista
+        dispacher hacia pages/caja/listado
+    */
     
+    /*
+        metodo de pagar
+        parametros a obtener:
+        id_factura
+        id_forma de pago
+        
+        SPR UPD PAGAR
+        UPDATE FACTURA
+        SET ID_FORMAPAGO = P_ID
+        ESTADO = 'P' --> G GUARDAR P PAGAR
+        WHERE ID_FACTURA = P_ID
+    */
     private void selectProducto (Connection cnx, HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         try {
             //se obtienen los parametros
-            int idFormaPago = Integer.parseInt(request.getParameter("selectFormaPago"));
-            String efectivo = request.getParameter("txtEfectivo");
+            int idProducto = Integer.parseInt(request.getParameter("selectProducto"));
+            String cantidad = request.getParameter("txtCantidad");
             
             //se crean las conexiones para el spr
             StringBuilder sb = new StringBuilder();
@@ -75,7 +121,7 @@ ArrayList<Producto> listaAgregados;
             PreparedStatement sta = cnx.prepareCall(sb.toString());
             
             //se sustituyen los valores para los parametros
-            sta.setInt(1, idFormaPago);
+            sta.setInt(1, idProducto);
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
@@ -89,7 +135,7 @@ ArrayList<Producto> listaAgregados;
                     rs.getString(5),
                     rs.getString(6),
                     rs.getString(7),
-                    efectivo,
+                    cantidad,
                     "",
                     "",
                     "",
@@ -102,7 +148,7 @@ ArrayList<Producto> listaAgregados;
             sta.close();
             
             Iterator itr = listaAgregados.iterator();
-            float total = 0.00f;
+            total = 0.00f;
             while (itr.hasNext()) {
                 Producto prod = (Producto)itr.next();
                 if (prod.getIdProducto() != 0) {
@@ -112,12 +158,79 @@ ArrayList<Producto> listaAgregados;
             DecimalFormat df = new DecimalFormat("#.##");
             request.setAttribute("total", String.valueOf(df.format(total)));
             request.setAttribute("listar", listaAgregados);
-            request.getRequestDispatcher("Pages/Caja/listado.jsp").forward(request, response);
+            request.getRequestDispatcher("Pages/Caja/detalle.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }
     }
-    
+        private void consultarFactura (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            String nit = request.getParameter("txtNit");
+            String nombre = request.getParameter("txtNombre");
+            String direccion = request.getParameter("txtDireccion");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_INS_UPD_CLIENTE(?, ?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
+            //se sustituyen los valores para los parametros
+            sta.setString(1, nit);
+            sta.setString(2, nombre);
+            sta.setString(3, direccion);
+            
+            //se ejecuta el spr con los parametros
+            ResultSet rs = sta.executeQuery();
+            
+            //se almacenan los valores
+            while (rs.next()) {
+                idFactura = rs.getInt(1); //variable global
+                nombre = rs.getString(2);
+                direccion = rs.getString(3);
+                nit = rs.getString(4);
+            }
+            sta.close();
+            
+            request.setAttribute("idCliente", idFactura);
+            request.setAttribute("nombre", nombre);
+            request.setAttribute("direccion", direccion);
+            request.setAttribute("nit", nit);
+            request.getRequestDispatcher("Pages/caja/detalle.jsp").forward(request, response);
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    private void updatePagar (Connection cnx, HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        try {
+            //se obtienen los parametros
+            int idFactura = Integer.parseInt(request.getParameter("id"));
+            int idCliente  = Integer.parseInt(request.getParameter("id"));
+            String total = request.getParameter("txtTotal");
+            
+            //se crean las conexiones para el spr
+            StringBuilder sb = new StringBuilder();
+            sb.append("{call SPR_UPD_FACTURA(?, ?, ?)}");
+            PreparedStatement sta = cnx.prepareCall(sb.toString());
+            
+            //se sustituyen los valores para los parametros
+            //en el mismo orden del stored procedure
+            sta.setInt(1, idFactura);
+            sta.setInt(2, idCliente);
+            sta.setString(3, total);
+            
+            //se ejecuta el spr con los parametros
+            sta.executeUpdate();
+            sta.close();
+            
+            //se redirige a la pagina de index
+            //this.listPagar(cnx, request, response); <- no existe
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+        
     private void defaultError (Exception e, HttpServletResponse response)
         throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
@@ -128,7 +241,7 @@ ArrayList<Producto> listaAgregados;
             out.println("<title>ERROR</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Error Venta retornado: " + e.getMessage() + "</h1>");
+            out.println("<h1>Error Caja retornado: " + e.getMessage() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
