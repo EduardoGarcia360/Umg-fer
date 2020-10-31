@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
  */
 public class ServDetalle extends HttpServlet {
     ArrayList<Producto> listaAgregados;
-    int idCliente;
+    int idCliente = 0;
     float total = 0.00f;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,6 +52,8 @@ public class ServDetalle extends HttpServlet {
         } else if (accion.equals("pedido")) {
             //this.verLista(cnx, request, response);
             this.agregarPedido(cnx, request, response);
+        } else if (accion.equals("remover")) {
+            this.removerItem(request, response);
         }
     }
     
@@ -156,7 +158,6 @@ public class ServDetalle extends HttpServlet {
             }
             sta.close();
             
-            request.setAttribute("idCliente", idCliente);
             request.setAttribute("nombre", nombre);
             request.setAttribute("direccion", direccion);
             request.setAttribute("nit", nit);
@@ -180,7 +181,7 @@ public class ServDetalle extends HttpServlet {
             //se sustituyen los valores para los parametros
             sta.setInt(1, idEmpleado);
             sta.setInt(2, idCliente);
-            sta.setFloat(3, total);
+            sta.setString(3, String.valueOf(total));
             
             //se ejecuta el spr con los parametros
             ResultSet rs = sta.executeQuery();
@@ -217,7 +218,7 @@ public class ServDetalle extends HttpServlet {
                     sta.setInt(1, prod.getIdProducto());
                     sta.setInt(2, idFactura);
                     sta.setInt(3, Integer.parseInt(prod.getExistencia()));
-                    sta.setFloat(4, Float.parseFloat(prod.getPrecio()));
+                    sta.setString(4, String.valueOf(prod.getPrecio()));
 
                     //se ejecuta el spr con los parametros
                     sta.executeUpdate();
@@ -255,6 +256,42 @@ public class ServDetalle extends HttpServlet {
                 out.println("</body>");
                 out.println("</html>");
             }
+        }catch(Exception e) {
+            this.defaultError(e, response);
+        }
+    }
+    
+    private void removerItem (HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException{
+        try {
+            //obtiene el id del producto a eliminar
+            int idProducto = Integer.parseInt(request.getParameter("id"));
+            
+            //hace una iteracion y cuando encuentre el objeto lo remueve de la lista
+            Iterator itr = listaAgregados.iterator();
+            while (itr.hasNext()) {
+                Producto prod = (Producto)itr.next();
+                if (prod.getIdProducto() == idProducto) {    
+                    itr.remove();
+                    break;
+                }
+            }
+            
+            //iteracion para calcular la suma del total
+            Iterator itr2 = listaAgregados.iterator();
+            total = 0.00f;
+            while (itr2.hasNext()) {
+                Producto prod = (Producto)itr2.next();
+                if (prod.getIdProducto() != 0) {
+                    total += (Float.parseFloat(prod.getExistencia()) * Float.parseFloat(prod.getPrecio()));
+                }
+            }
+            
+            //retorna los valores
+            DecimalFormat df = new DecimalFormat("#.##");
+            request.setAttribute("total", String.valueOf(df.format(total)));
+            request.setAttribute("listar", listaAgregados);
+            request.getRequestDispatcher("Pages/Venta/detalle.jsp").forward(request, response);
         }catch(Exception e) {
             this.defaultError(e, response);
         }

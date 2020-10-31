@@ -18,7 +18,7 @@
             }
         </style>
     </head>
-    <body>
+    <body background="imagenes/fondo_pagina.jpg">
         <% 
             String nombre = (String)session.getAttribute("nombre");
         %>
@@ -53,9 +53,7 @@
                     <%= nombre%>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
+                  <a class="dropdown-item" href="#">¡Bienvenido!</a>
                   <div class="dropdown-divider"></div>
                   <form action="Validar" method="POST" style="display:block; text-align: center;">
                       <input type="submit" name="accion" value="Salir" class="btn btn-primary">
